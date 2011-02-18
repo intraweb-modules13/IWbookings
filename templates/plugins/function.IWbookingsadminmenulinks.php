@@ -16,7 +16,7 @@ function smarty_function_IWbookingsadminmenulinks($params, &$smarty)
 		$params['seperator'] = '|';
 	}
 	if (!isset($params['class'])) {
-		$params['class'] = 'pn-menuitem-title';
+		$params['class'] = 'z-menuitem-title';
 	}
 
 	$bookingsadminmenulinks = "<span class=\"" . $params['class'] . "\">" . $params['start'] . " ";
