@@ -1,6 +1,6 @@
 <?php
 
-class IWbookings_Installer extends Zikula_Installer {
+class IWbookings_Installer extends Zikula_AbstractInstaller {
 
     /**
      * Initialise the IWbookings module creating module tables and module vars

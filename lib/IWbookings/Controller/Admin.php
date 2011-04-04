@@ -1,6 +1,6 @@
 <?php
 
-class IWbookings_Controller_Admin extends Zikula_Controller {
+class IWbookings_Controller_Admin extends Zikula_AbstractController {
     /**
      * Admin main page
      * @author	Albert Pérez Monfort (aperezm@xtec.cat)

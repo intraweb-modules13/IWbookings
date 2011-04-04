@@ -1,5 +1,5 @@
 <?php
-class IWbookings_Api_User extends Zikula_Api {
+class IWbookings_Api_User extends Zikula_AbstractApi {
     public function getall($args) {
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_READ)) {

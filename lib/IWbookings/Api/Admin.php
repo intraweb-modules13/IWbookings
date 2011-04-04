@@ -1,6 +1,6 @@
 <?php
 
-class IWbookings_Api_Admin extends Zikula_Api {
+class IWbookings_Api_Admin extends Zikula_AbstractApi {
     function IWbookings_adminapi_create($args) {
         $descriu = FormUtil::getPassedValue('descriu', isset($args['descriu']) ? $args['descriu'] : null, 'GET');
         $nom_espai = FormUtil::getPassedValue('nom_espai', isset($args['nom_espai']) ? $args['nom_espai'] : null, 'GET');
