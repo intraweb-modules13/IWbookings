@@ -8,7 +8,6 @@
         if(!error){document.new_espai.submit();}
     }
 </script>
-{if $statusmsg neq ""}{$statusmsg}{/if}
 <script language="javascript" src="modules/IWbookings/javascript/ColorPicker2.js"></script>
 <script language="javascript" src="modules/IWbookings/javascript/AnchorPosition.js"></script>
 <script language="javascript" src="modules/IWbookings/javascript/PopupWindow.js"></script>
@@ -28,12 +27,12 @@
 </script>
 {include file="IWbookings_admin_menu.htm"}
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='db_add.gif' set='icons/large'}</div>
+    <div class="z-adminpageicon">{img modname='core' src='db_add.png' set='icons/large'}</div>
     <div style="height:10px;">&nbsp;</div>
     <h2>{$accio}</h2>
-    <form  method="post" name="new_espai" id="new_espai" action="{modurl modname="IWbookings" type="admin" func="create"}" method="post" enctype="application/x-www-form-urlencoded">
-           <input type="hidden" name="authid" value="{secgenauthkey module="IWbookings"}" />
-           <input type="hidden" name="sid" value="{$sid}" />
+    <form  method="post" name="new_espai" id="new_espai" action="{modurl modname='IWbookings' type='admin' func='create'}" method="post" enctype="application/x-www-form-urlencoded">
+        <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
+        <input type="hidden" name="sid" value="{$sid}" />
         <input type="hidden" name="m" value="{$m}" />
         <table width="600" border="0" style="text-align:left;">
             <tr>

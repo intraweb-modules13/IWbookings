@@ -1,6 +1,7 @@
 <?php
 
 class IWbookings_Api_Admin extends Zikula_AbstractApi {
+
     function IWbookings_adminapi_create($args) {
         $descriu = FormUtil::getPassedValue('descriu', isset($args['descriu']) ? $args['descriu'] : null, 'GET');
         $nom_espai = FormUtil::getPassedValue('nom_espai', isset($args['nom_espai']) ? $args['nom_espai'] : null, 'GET');
@@ -201,6 +202,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
     /*
       Funci� que fa una reserva temporal a la base da dades
      */
+
     function IWbookings_adminapi_fer_reserva($args) {
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
         $inici = FormUtil::getPassedValue('inici', isset($args['inici']) ? $args['inici'] : null, 'GET');
@@ -243,6 +245,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
     /*
       Funci� que anul�la una reserva temporal de la base de dades
      */
+
     function IWbookings_adminapi_anulla($args) {
         $bid = FormUtil::getPassedValue('bid', isset($args['bid']) ? $args['bid'] : null, 'GET');
 
@@ -269,6 +272,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
     /*
       Funci� que esborra un espai o equipament de reserva de la base de dades
      */
+
     function IWbookings_adminapi_buida($args) {
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'POST');
 
@@ -316,4 +320,20 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
         // Success
         return true;
     }
+
+    public function getlinks($args) {
+        $func = FormUtil::getPassedValue('func', isset($args['func']) ? $args['func'] : null, 'GET');
+        $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
+        $links = array();
+        if (SecurityUtil::checkPermission('IWbookings::', '::', ACCESS_ADMIN)) {
+            $links[] = array('url' => ModUtil::url('IWbookings', 'admin', 'newItem', array('m' => 'n')), 'text' => $this->__('Add a new booking'), 'id' => 'iwbookings_newItem', 'class' => 'z-icon-es-new');
+            $links[] = array('url' => ModUtil::url('IWbookings', 'admin', 'main'), 'text' => $this->__('Show rooms and equipment bookings'), 'id' => 'iwbookings_main', 'class' => 'z-icon-es-view');
+            if ($func == 'assigna') {
+                $links[] = array('url' => ModUtil::url('IWbookings', 'admin', 'buida', array('sid' => $sid)), 'text' => $this->__('Empty table'), 'id' => 'iwbookings_buida', 'class' => 'z-icon-es-config');
+            }
+            $links[] = array('url' => ModUtil::url('IWbookings', 'admin', 'conf'), 'text' => $this->__('Module configuration'), 'id' => 'iwbookings_conf', 'class' => 'z-icon-es-config');
+        }
+        return $links;
+    }
+
 }
