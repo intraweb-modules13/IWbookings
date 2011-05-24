@@ -6,6 +6,8 @@
     {if not isset($func)}
     {assign var=func value=''}
     {/if}
-    {modulelinks modname='IWforms' type='user' fid=$fid func=$func}
-    {modulelinks modname='IWbookings' type='admin'}
+    {if not isset($sid)}
+    {assign var=sid value=0}
+    {/if}
+    {modulelinks modname='IWbookings' type='admin' sid=$sid func=$func}
 </div>

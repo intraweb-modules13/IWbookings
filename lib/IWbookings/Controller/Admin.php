@@ -1,6 +1,12 @@
 <?php
 
 class IWbookings_Controller_Admin extends Zikula_AbstractController {
+
+    protected function postInitialize() {
+        // Set caching to false by default.
+        $this->view->setCaching(false);
+    }
+
     /**
      * Admin main page
      * @author	Albert Pérez Monfort (aperezm@xtec.cat)
@@ -10,10 +16,9 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
     public function main() {
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('Sorry! No authorization to access this module.'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
         $espais = array();
-        $view = Zikula_View::getInstance('IWbookings', false);
 
         //Call getall i que retornar� la informaci�
         $items = ModUtil::apiFunc('IWbookings', 'user', 'getall');
@@ -26,12 +31,11 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
             (empty($item['description'])) ? $item['description'] = '---' : "";
 
             //Recollim el nom del marc horari
-            $marc = ModUtil::apiFunc('IWbookings', 'admin', 'nom_marc',
-                            array('mdid' => $item['mdid']));
+            $marc = ModUtil::apiFunc('IWbookings', 'admin', 'nom_marc', array('mdid' => $item['mdid']));
 
             (!empty($marc)) ? $item['mdid'] = $marc : $item['mdid'] = "---";
             //Si les observacions arriben buides hi posem uns guions per tal que la taula no quedi lletja
-            ($item['vertical'] == 1) ? $item['vertical'] = $this->__('Column', $dom) : $item['vertical'] = $this->__('Row');
+            ($item['vertical'] == 1) ? $item['vertical'] = $this->__('Column') : $item['vertical'] = $this->__('Row');
             if (ModUtil::getVar('IWbookings', 'showcolors')) {
                 $color = $item['color'];
             } else {
@@ -43,12 +47,13 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
                 'vertical' => $item['vertical'],
                 'actiu' => $item['active'],
                 'mdid' => $item['mdid'],
-                'color' => $color);
+                'color' => $color,
+            );
         }
-        $view->assign('espais', $espais);
-        $view->assign('hi_ha_espais', $hi_ha_espais);
 
-        return $view->fetch('IWbookings_admin_main.htm');
+        return $this->view->assign('espais', $espais)
+                ->assign('hi_ha_espais', $hi_ha_espais)
+                ->fetch('IWbookings_admin_main.htm');
     }
 
     /*
@@ -58,32 +63,27 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
     public function conf() {
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('Sorry! No authorization to access this module.'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
 
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-        $grups = ModUtil::func('IWmain', 'user', 'getAllGroups',
-                        array('sv' => $sv,
-                            'less' => ModUtil::getVar('iw_myrole', 'rolegroup')));
+        $grups = ModUtil::func('IWmain', 'user', 'getAllGroups', array('sv' => $sv,
+                    'less' => ModUtil::getVar('iw_myrole', 'rolegroup')));
 
         //Omplim el nombre de setmanes vista per fer les reserves
         if (empty($grups)) {
             return LogUtil::registerError($this->__('No groups found'));
         }
 
-        // Create output object
-        $view = Zikula_View::getInstance('IWbookings', false);
-
-        $view->assign('grups', $grups);
-        $view->assign('grup', ModUtil::getVar('IWbookings', 'group'));
-        $view->assign('setmanes', ModUtil::getVar('IWbookings', 'weeks'));
-        $view->assign('capsetmana', ModUtil::getVar('IWbookings', 'weekends')); //
-        $view->assign('taula', ModUtil::getVar('IWbookings', 'month_panel'));
-        $view->assign('delantigues', ModUtil::getVar('IWbookings', 'eraseold'));
-        $view->assign('mostracolors', ModUtil::getVar('IWbookings', 'showcolors'));
-        $view->assign('NTPtime', ModUtil::getVar('IWbookings', 'NTPtime'));
-
-        return $view->fetch('IWbookings_admin_conf.htm');
+        return $this->view->assign('grups', $grups)
+                ->assign('grup', ModUtil::getVar('IWbookings', 'group'))
+                ->assign('setmanes', ModUtil::getVar('IWbookings', 'weeks'))
+                ->assign('capsetmana', ModUtil::getVar('IWbookings', 'weekends'))
+                ->assign('taula', ModUtil::getVar('IWbookings', 'month_panel'))
+                ->assign('delantigues', ModUtil::getVar('IWbookings', 'eraseold'))
+                ->assign('mostracolors', ModUtil::getVar('IWbookings', 'showcolors'))
+                ->assign('NTPtime', ModUtil::getVar('IWbookings', 'NTPtime'))
+                ->fetch('IWbookings_admin_conf.htm');
     }
 
     /*
@@ -94,7 +94,7 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
     public function conf_modifica($args) {
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('Sorry! No authorization to access this module.'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
 
         $grup = FormUtil::getPassedValue('grup', isset($args['grup']) ? $args['grup'] : null, 'POST');
@@ -105,9 +105,7 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
         $mostracolors = FormUtil::getPassedValue('mostracolors', isset($args['mostracolors']) ? $args['mostracolors'] : null, 'POST');
         $NTPtime = FormUtil::getPassedValue('NTPtime', isset($args['NTPtime']) ? $args['NTPtime'] : null, 'POST');
 
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWbookings', 'admin', 'main'));
-        }
+        $this->checkCsrfToken();
 
         if (!isset($grup))
             $grup = 0;
@@ -116,13 +114,13 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
             $setmanes = 1;
 
 
-        ModUtil::setVar('IWbookings', 'group', $grup); //grup
-        ModUtil::setVar('IWbookings', 'weeks', $setmanes); // setmanes
-        ModUtil::setVar('IWbookings', 'month_panel', $taula); // taula_mes
-        ModUtil::setVar('IWbookings', 'weekends', $capsetmana);  // capssetmana
-        ModUtil::setVar('IWbookings', 'eraseold', $delantigues); // delantigues
-        ModUtil::setVar('IWbookings', 'showcolors', $mostracolors); // mostracolors
-        ModUtil::setVar('IWbookings', 'NTPtime', $NTPtime); // mostracolors
+        $this->setVar('group', $grup) //grup
+                ->setVar('weeks', $setmanes) // setmanes
+                ->setVar('month_panel', $taula) // taula_mes
+                ->setVar('weekends', $capsetmana)  // capssetmana
+                ->setVar('eraseold', $delantigues) // delantigues
+                ->setVar('showcolors', $mostracolors) // mostracolors
+                ->setVar('NTPtime', $NTPtime); // mostracolors
 
         LogUtil::registerStatus($this->__('Configuration updated'));
         System::redirect(ModUtil::url('IWbookings', 'admin', 'main'));
@@ -139,17 +137,23 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
     public function newItem() {
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('Sorry! No authorization to access this module.'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
 
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
         $m = FormUtil::getPassedValue('m', isset($args['m']) ? $args['m'] : null, 'GET');
 
+        $nom_espai = '';
+        $descriu = '';
+        $actiu = 0;
+        $vertical = 0;
+        $mdid = 0;
+        $color = '';
+
         //Get space information for edition purposes
         if (!empty($sid)) {
             //Get register information
-            $registre = ModUtil::apiFunc('IWbookings', 'user', 'get',
-                            array('sid' => $sid));
+            $registre = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
             if ($registre == false) {
                 return LogUtil::registerError($this->__('Error! Could not load module.'));
             }
@@ -166,9 +170,16 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
         //Func marcs: Check for existing time frames.
         //If exists, returns an array with timeframe's names
         //otherwise, an empty array.
-        $marcs = ModUtil::apiFunc('IWbookings', 'admin', 'marcs');
+                        // Checks if module IWtimeframes is installed. If not returns error
+        $modid = ModUtil::getIdFromName('IWtimeframes');
+        $modinfo = ModUtil::getInfo($modid);
+        if ($modinfo['state'] == 3) {
+            $marcs = ModUtil::apiFunc('IWbookings', 'admin', 'marcs');
+        } else {
+            $marcs = array();
+        }
 
-        (empty($marcs)) ? $hi_ha_marcs = false : $hi_ha_marcs = true;
+        $hi_ha_marcs = (empty($marcs)) ? false : true;
 
         switch ($m) {
             case 'n':
@@ -181,23 +192,19 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
                 break;
         }
 
-        // Create output object
-        $view = Zikula_View::getInstance('IWbookings', false);
-
-        $view->assign('nom_espai', $nom_espai);
-        $view->assign('descriu', $descriu);
-        $view->assign('color', $color);
-        $view->assign('actiu', $actiu);
-        $view->assign('hi_ha_marcs', $hi_ha_marcs);
-        $view->assign('marcs', $marcs);
-        $view->assign('mdid', $mdid);
-        $view->assign('vertical', $vertical);
-        $view->assign('m', $m);
-        $view->assign('accio', $accio);
-        $view->assign('acciosubmit', $acciosubmit);
-        $view->assign('sid', $sid);
-
-        return $view->fetch('IWbookings_admin_new.htm');
+        return $this->view->assign('nom_espai', $nom_espai)
+                ->assign('descriu', $descriu)
+                ->assign('color', $color)
+                ->assign('actiu', $actiu)
+                ->assign('hi_ha_marcs', $hi_ha_marcs)
+                ->assign('marcs', $marcs)
+                ->assign('mdid', $mdid)
+                ->assign('vertical', $vertical)
+                ->assign('m', $m)
+                ->assign('accio', $accio)
+                ->assign('acciosubmit', $acciosubmit)
+                ->assign('sid', $sid)
+                ->fetch('IWbookings_admin_new.htm');
     }
 
     /*
@@ -219,41 +226,35 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
         $m = FormUtil::getPassedValue('m', isset($args['m']) ? $args['m'] : null, 'POST');
 
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('Sorry! No authorization to access this module.'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
 
-        // Confirm authorisation code
-        if (!SecurityUtil::generateAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWbookings', 'admin', 'main'));
-        }
+        $this->checkCsrfToken();
 
         (empty($mdid)) ? $vertical = 0 : "";
 
         ($actiu == 'on') ? $actiu = 1 : $actiu = 0;
         ($vertical == 'on') ? $vertical = 1 : $vertical = 0;
-
         if ($m == 'n') {
             //Es crida la funció API amb les dades extretes del formulari
-            if (ModUtil::apiFunc('IWbookings', 'admin', 'create',
-                            array('nom_espai' => $nom_espai,
-                                'descriu' => $descriu,
-                                'actiu' => $actiu,
-                                'mdid' => $mdid,
-                                'vertical' => $vertical,
-                                'color' => $color))) {
+            if (ModUtil::apiFunc('IWbookings', 'admin', 'create', array('nom_espai' => $nom_espai,
+                        'descriu' => $descriu,
+                        'actiu' => $actiu,
+                        'mdid' => $mdid,
+                        'vertical' => $vertical,
+                        'color' => $color))) {
                 //S'ha creat l'espai de reserva correctament
                 //success
                 LogUtil::registerStatus($this->__('A new room or equipment to book has been created'));
             }
         } else {
-            if (ModUtil::apiFunc('IWbookings', 'admin', 'update',
-                            array('sid' => $sid,
-                                'nom_espai' => $nom_espai,
-                                'descriu' => $descriu,
-                                'actiu' => $actiu,
-                                'mdid' => $mdid,
-                                'vertical' => $vertical,
-                                'color' => $color))) {
+            if (ModUtil::apiFunc('IWbookings', 'admin', 'update', array('sid' => $sid,
+                        'nom_espai' => $nom_espai,
+                        'descriu' => $descriu,
+                        'actiu' => $actiu,
+                        'mdid' => $mdid,
+                        'vertical' => $vertical,
+                        'color' => $color))) {
                 //La modificaci� s'ha fet amb �xit
                 // Success
                 LogUtil::registerStatus($this->__('Room or equipment updated'));
@@ -275,39 +276,30 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('You are not allowed to administrate the bookings'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
 
         //Cridem la funci� de l'API de l'usuari que ens retornar� la inforamci� del
         //registre demanat
-        $registre = ModUtil::apiFunc('IWbookings', 'user', 'get',
-                        array('sid' => $sid));
+        $registre = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
 
         if ($registre == false) {
             LogUtil::registerError($this->__('The room or equipment was not found'));
             return true;
         }
 
-        $view = Zikula_View::getInstance('IWbookings', false);
-
         //Demanem confirmaci� per l'esborrament del registre, si no s'ha demanat abans
         if (empty($confirmation)) {
             //Afegim el men� de l'administrador
-            $view->assign('nom_espai', $registre['space_name']);
-            $view->assign('sid', $sid);
-            return $view->fetch('IWbookings_admin_del.htm');
+            return $this->view->assign('nom_espai', $registre['space_name'])
+                    ->assign('sid', $sid)
+                    ->fetch('IWbookings_admin_del.htm');
         }
 
-        //L'usuari ha confirmat l'esborrament del registre i procedim a fer-ho efectiu
-        // After user confirmation proceed with the space deletion
-        // Confirm authorisation code
-        if (!SecurityUtil::generateAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWbookings', 'admin', 'main'));
-        }
+        $this->checkCsrfToken();
 
         //Cridem la funci� API que far� l'esborrament del registre
-        if (ModUtil::apiFunc('IWbookings', 'admin', 'delete',
-                        array('sid' => $sid))) {
+        if (ModUtil::apiFunc('IWbookings', 'admin', 'delete', array('sid' => $sid))) {
             //L'esborrament ha estat un �xit i ho notifiquem
             LogUtil::registerStatus($this->__('Room or equipment deleted') . ": " . $registre['space_name']);
         }
@@ -326,7 +318,7 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
     public function mostra_taula($arg) {
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('You are not allowed to administrate the bookings'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
 
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
@@ -335,11 +327,8 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
         //Array amb els noms dels dies de la setmana
         $dies = array($this->__('Monday'), $this->__('Tuesday'), $this->__('Wednesday'), $this->__('Thursday'), $this->__('Friday'));
 
-        $view = Zikula_View::getInstance('IWbookings', false);
-
         // Get space info
-        $espai = ModUtil::apiFunc('IWbookings', 'user', 'get',
-                        array('sid' => $sid));
+        $espai = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
 
         //D'entrada farem que les taules es mostrin de forma horitzontal. Despr�s, si
         //hi ha un marc horari definit canviarem al que correspongui
@@ -351,22 +340,15 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
 
         if ($espai['mdid'] != 0) {
             //Busquem les franges hor�ries
-            $franges = ModUtil::apiFunc('IWbookings', 'user', 'getall_hores',
-                            array('mdid' => $espai['mdid']));
+            $franges = ModUtil::apiFunc('IWbookings', 'user', 'getall_hores', array('mdid' => $espai['mdid']));
             if (!empty($franges)) {
                 $vertical = $espai['vertical'];
             }
         }
 
-        //Carreguem les funcions GUI de l'usuari
-        if (!ModUtil::load('IWbookings', 'user')) {
-            return LogUtil::registerError($this->__('Error! Could not load module.'), 403);
-        }
-
         //Es crida la funció API que retorna les reserves temporals de l'espai que volem reservar
-        $temporals = ModUtil::apiFunc('IWbookings', 'user', 'getall_reserves',
-                        array('sid' => $sid,
-                            'temporal' => 1));
+        $temporals = ModUtil::apiFunc('IWbookings', 'user', 'getall_reserves', array('sid' => $sid,
+                    'temporal' => 1));
 
         //Generem la taula amb el format corresponent
         if ($vertical != 1) {
@@ -411,18 +393,17 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
                         $registre['data'] = $registre['dow'];
                         $registre['inici'] = date('H:i', strtotime($registre['inici']));
                         $registre['final'] = date('H:i', strtotime($registre['final']));
-                        $registre['usuari'] = ModUtil::func('IWmain', 'user', 'getUserInfo',
-                                        array('uid' => $registre['usuari'],
-                                            'sv' => ModUtil::func('IWmain', 'user', 'genSecurityValue'),
-                                            'info' => 'ncc'));
+                        $registre['usuari'] = ModUtil::func('IWmain', 'user', 'getUserInfo', array('uid' => $registre['usuari'],
+                                    'sv' => ModUtil::func('IWmain', 'user', 'genSecurityValue'),
+                                    'info' => 'ncc'));
                         $taula[$d][$nr] = $registre;
                         $nr++; //Incrementem l'�ndex de reserves del dia
                     }
                     $d++;  //Incrementem el dia
                 }
             } // foreach $dies
-            $view->assign('numdies', count($taula));
-            $view->assign('record', $taula);
+            $this->view->assign('numdies', count($taula))
+                    ->assign('record', $taula);
         } else { // format vertical
             //Creem la cap�alera de la taula amb els dies de la setmana i les dates
             $dies_data = array();
@@ -461,10 +442,9 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
                                 'bid' => $temporal['bid'],
                                 'grup' => $temporal['grup'],
                                 'temp' => $temporal['temp'],
-                                'usuari' => ModUtil::func('IWmain', 'user', 'getUserInfo',
-                                        array('uid' => $temporal['usuari'],
-                                            'sv' => ModUtil::func('IWmain', 'user', 'genSecurityValue'),
-                                            'info' => 'ncc')));
+                                'usuari' => ModUtil::func('IWmain', 'user', 'getUserInfo', array('uid' => $temporal['usuari'],
+                                    'sv' => ModUtil::func('IWmain', 'user', 'genSecurityValue'),
+                                    'info' => 'ncc')));
                         }
                     }//die();
                     $taula[$f][$d] = $registre1;
@@ -479,15 +459,15 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
                 // Next timeframe
                 $f++;
             }
-            $view->assign('franges', $franges);
-            $view->assign('horari', $horari);
-            $view->assign('record', $taula);
+            $this->view->assign('franges', $franges)
+                    ->assign('horari', $horari)
+                    ->assign('record', $taula);
         }
 
-        $view->assign('vertical', $vertical);
-        $view->assign('sid', $sid);
-        $view->assign('dies', $dies);
-        return $view->fetch('IWbookings_admin_taula.htm');
+        return $this->view->assign('vertical', $vertical)
+                ->assign('sid', $sid)
+                ->assign('dies', $dies)
+                ->fetch('IWbookings_admin_taula.htm');
     }
 
     /*
@@ -501,17 +481,15 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('You are not allowed to administrate the bookings'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
 
         //Es crida la funci� API que retorna les dades de l'espai que volem reservar
-        $espai = ModUtil::apiFunc('IWbookings', 'user', 'get',
-                        array('sid' => $sid));
+        $espai = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
 
         if ($espai['mdid'] != 0) {
             //Busquem les franges hor�ries i les tornem en forma de matriu per un MultiSelect
-            $franges = ModUtil::apiFunc('IWbookings', 'user', 'getall_hores_MS',
-                            array('mdid' => $espai['mdid']));
+            $franges = ModUtil::apiFunc('IWbookings', 'user', 'getall_hores_MS', array('mdid' => $espai['mdid']));
         }
         ($period >= 0) ? $period = $franges[$period]['id'] : $period = null;
         //Constru�m l'array dels dies per el formulari
@@ -553,37 +531,29 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
         //Busquem la llista del professorat del centre
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
         //Agafem els grups de la preperats per un MultiSelect
-        $professorat = ModUtil::func('IWmain', 'user', 'getMembersGroup',
-                        array('gid' => ModUtil::getVar('IWbookings', 'group'),
-                            'sv' => $sv));
+        $professorat = ModUtil::func('IWmain', 'user', 'getMembersGroup', array('gid' => ModUtil::getVar('IWbookings', 'group'),
+                    'sv' => $sv));
         sort($professorat);
         if (empty($professorat)) {
-            return LogUtil::registerError($this->__('Permanent bookings are not possible as long as the group is empty. Please check module configuration'), 403);
+            return LogUtil::registerError($this->__('Permanent bookings are not possible as long as the group is empty. Please check module configuration'));
         }
 
-        $view = Zikula_View::getInstance('IWbookings', false);
-
-        $view->assign('dayofweek', $dow);
-        $view->assign('period', $period);
-        $view->assign('dayofweek1', $dow + 1);
-        $view->assign('franges', $franges);
-        $view->assign('dia', $dia);
-        $view->assign('hora', $hora);
-        $view->assign('minut', $minut);
-        $view->assign('sid', $sid);
-        $view->assign('professorat', $professorat);
-
-        return $view->fetch('IWbookings_admin_assigna_frm.htm');
+        return $this->view->assign('dayofweek', $dow)
+                ->assign('period', $period)
+                ->assign('dayofweek1', $dow + 1)
+                ->assign('franges', $franges)
+                ->assign('dia', $dia)
+                ->assign('hora', $hora)
+                ->assign('minut', $minut)
+                ->assign('sid', $sid)
+                ->assign('professorat', $professorat)
+                ->fetch('IWbookings_admin_assigna_frm.htm');
     }
-
-    /*
-      Funci� que filtra les dades de les reserves temporals abans d'entrar-les a la base de dades
-     */
 
     public function reserva($arg) {
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('You are not allowed to administrate the bookings'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
 
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'POST');
@@ -597,10 +567,7 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
         $period = FormUtil::getPassedValue('hora', isset($args['hora']) ? $args['hora'] : null, 'POST');
         $finish_date = FormUtil::getPassedValue('date', isset($args['date']) ? $args['date'] : null, 'POST');
 
-        //Confirmaci� del codi d'autoritzaci�.
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWbookings', 'admin', 'main'));
-        }
+        $this->checkCsrfToken();
 
         $dies = array('',
             $this->__('Monday'),
@@ -612,36 +579,31 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
         // Comprovem que s'han complimentat el camp grup en el formulari
         if (empty($grup)) {
             LogUtil::registerError($this->__('You must specify a group'));
-            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna',
-                                    array('sid' => $sid)));
+            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna', array('sid' => $sid)));
             return true;
         }
 
         // Comprovem que s'han complimentat el camp usuari en el formulari
         if (empty($profe)) {
             LogUtil::registerError($this->__('You must specify a user for preferential booking'));
-            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna',
-                                    array('sid' => $sid)));
+            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna', array('sid' => $sid)));
             return true;
         }
 
         // Check if finsh_date is selected and is higger than actual date
         if (empty($finish_date)) {
             LogUtil::registerError($this->__('You must specify a finish date'));
-            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna',
-                                    array('sid' => $sid)));
+            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna', array('sid' => $sid)));
             return true;
         } else {
             $finish_date = strtotime($finish_date);
             if ($finish_date < strtotime('today')) {
                 LogUtil::registerError($this->__('Finish date is minnor than actual date'));
-                System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna',
-                                        array('sid' => $sid)));
+                System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna', array('sid' => $sid)));
                 return true;
             }
         }
 
-        //
         //Busquem l'hora i dia de la reserva i ho passem a format timestamp
         if ($dia >= date("w")) {
             $bookingDate = DateUtil::getDatetime_NextDay($dia - date("w"), '%Y-%m-%d');
@@ -660,8 +622,7 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
         //Check if start time period is minor than end time, otherwise triggers an error
         if ($start_hour >= $end_hour) {
             LogUtil::registerError($start_hour . $this->__('Finish time is earlier than start time') . $end_hour);
-            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna',
-                                    array('sid' => $sid)));
+            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna', array('sid' => $sid)));
             return true;
         }
 
@@ -670,55 +631,34 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
         $end = $bookingDate . " " . $end_hour;
 
         //Check for booking disponibility.
-        $occupied = ModUtil::apiFunc('IWbookings', 'admin', 'reservat',
-                        array('sid' => $sid,
-                            'inici' => $start,
-                            'final' => $end));
+        $occupied = ModUtil::apiFunc('IWbookings', 'admin', 'reservat', array('sid' => $sid,
+                    'inici' => $start,
+                    'final' => $end));
 
         if ($occupied) {
             //The requested booking isn't available
             LogUtil::registerError($this->__('Chosen time for preferential booking is occupied'));
-            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna',
-                                    array('sid' => $sid)));
+            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna', array('sid' => $sid)));
             return true;
         }
         // Insert booking into DB
-        $success = ModUtil::apiFunc('IWbookings', 'admin', 'fer_reserva',
-                        array('sid' => $sid,
-                            'inici' => $start,
-                            'final' => $end,
-                            'grup' => $grup,
-                            'profe' => $profe,
-                            'finish_date' => $finish_date));
+        $success = ModUtil::apiFunc('IWbookings', 'admin', 'fer_reserva', array('sid' => $sid,
+                    'inici' => $start,
+                    'final' => $end,
+                    'grup' => $grup,
+                    'profe' => $profe,
+                    'finish_date' => $finish_date));
 
         if (!$success) {
             // DB booking insertion hasn't worked properly
             //Hi ha hagut algun error a l'hora d'introduir la reserva a la BD
             LogUtil::registerError($this->__('Booking failed'));
-            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna',
-                                    array('sid' => $sid)));
+            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna', array('sid' => $sid)));
             return true;
         }
-        System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna',
-                                array('sid' => $sid)));
+        System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna', array('sid' => $sid)));
         return true;
-// Si es vol que aparegui informaci� de la reserva realitzada 
-        /* 	$view = Zikula_View::getInstance('IWbookings', false);
-
-          // Inform user: success in booking action
-          $view->assign('sid',$sid);
-          $view->assign('diareserva',$dies[$dia]);
-          $view->assign('horainici',$start_hour);
-          $view->assign('horafinal',$end_hour);
-          $view->assign('grup',$grup);
-
-          return $view->fetch('IWbookings_admin_reserva.htm');
-         */
     }
-
-    /*
-      Funci� per a l'anul�laci� d'una reserva de la base de dades
-     */
 
     public function anulla($arg) {
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
@@ -726,28 +666,21 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
 
         if (!SecurityUtil::checkPermission('IWbookings::', '::', ACCESS_ADMIN)) {
             LogUtil::registerError($this->__('You are not allowed to administrate the bookings'));
-            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna',
-                                    array('sid' => $sid)));
+            System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna', array('sid' => $sid)));
             return true;
         }
 
         //Sense m�s pre�mbuls eliminem la reserva de la base de dades
-        $anullat = ModUtil::apiFunc('IWbookings', 'admin', 'anulla',
-                        array('bid' => $bid));
+        $anullat = ModUtil::apiFunc('IWbookings', 'admin', 'anulla', array('bid' => $bid));
 
         if (!$anullat) {
             LogUtil::registerError($this->__('An error has occurred while deleting the register'));
             return true;
         }
         LogUtil::registerStatus($this->__('Preferential booking cancelled'));
-        System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna',
-                                array('sid' => $sid)));
+        System::redirect(ModUtil::url('IWbookings', 'admin', 'assigna', array('sid' => $sid)));
         return true;
     }
-
-    /*
-      Funci� que buida la taula de les reserves d'un determinat espai o equip. Demana confirmaci�
-     */
 
     public function buida($args) {
         //Recollim els par�metres per poder fer l'esborrament de l'espai
@@ -757,52 +690,39 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
 
         //Cridem la funci� de l'API de l'usuari que ens retornar� la informaci� del
         //registre demanat
-        $registre = ModUtil::apiFunc('IWbookings', 'user', 'get',
-                        array('sid' => $sid));
+        $registre = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
 
         if ($registre == false) {
             LogUtil::registerError($this->__('The room or equipment was not found'));
-            System::redirect(ModUtil::url('IWbookings', 'user', 'assigna',
-                                    array('sid' => $sid)));
+            System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid)));
             return true;
         }
 
         //Comprovaci� de seguretat
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
             LogUtil::registerError($this->__('You are not allowed to administrate the bookings'));
-            System::redirect(ModUtil::url('IWbookings', 'user', 'assigna',
-                                    array('sid' => $sid)));
+            System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid)));
             return true;
         }
-
-        $view = Zikula_View::getInstance('IWbookings', false);
 
         //Demanem confirmaci� per l'esborrament del registre, si no s'ha demanat abans
         if (empty($confirmation)) {
             //Afegim el men� de l'administrador
-            $view->assign('nom_espai', $registre['space_name']);
-            $view->assign('sid', $sid);
-            return $view->fetch('IWbookings_admin_emptyspace.htm');
+            return $this->view->assign('nom_espai', $registre['space_name'])
+                    ->assign('sid', $sid)
+                    ->fetch('IWbookings_admin_emptyspace.htm');
         }
 
-        //L'usuari ha confirmat l'esborrament del registre i procedim a fer-ho efectiu
-        //Confirmaci� del codi d'autoritzaci�.
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWbookings', 'admin', 'assigna',
-                            array('sid' => $sid)));
-        }
+        $this->checkCsrfToken();
 
         //Cridem la funci� API que far� l'esborrament del registre
-        if (ModUtil::apiFunc('IWbookings', 'admin', 'buida',
-                        array('sid' => $sid))) {
+        if (ModUtil::apiFunc('IWbookings', 'admin', 'buida', array('sid' => $sid))) {
             //L'esborrament ha estat un �xit i ho notifiquem
             LogUtil::registerStatus($this->__('Table emptied'));
         }
 
         //Enviem a l'usuari a la taula d'espais i equipaments per reservar
-        System::redirect(ModUtil::url('IWbookings', 'user', 'assigna',
-                                array('sid' => $sid)));
-
+        System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid)));
         //Retornem el valor true ja que l'esborrament ha estat possible
         return true;
     }

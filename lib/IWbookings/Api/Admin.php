@@ -2,7 +2,7 @@
 
 class IWbookings_Api_Admin extends Zikula_AbstractApi {
 
-    function IWbookings_adminapi_create($args) {
+    public function create($args) {
         $descriu = FormUtil::getPassedValue('descriu', isset($args['descriu']) ? $args['descriu'] : null, 'GET');
         $nom_espai = FormUtil::getPassedValue('nom_espai', isset($args['nom_espai']) ? $args['nom_espai'] : null, 'GET');
         $actiu = FormUtil::getPassedValue('actiu', isset($args['actiu']) ? $args['actiu'] : null, 'GET');
@@ -17,7 +17,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
 
         //Check space o equipment name is set
         if ((!isset($args['nom_espai']))) {
-            return LogUtil::registerError($this->__('Error! Could not do what you wanted. Please check your input.'), 403);
+            throw new Zikula_Exception_Forbidden($this->__('Error! Could not do what you wanted. Please check your input.'));
         }
         //Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
@@ -44,7 +44,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
       Update or modify space or equipment info
      */
 
-    function IWbookings_adminapi_update($args) {
+    public function update($args) {
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
         $nom_espai = FormUtil::getPassedValue('nom_espai', isset($args['nom_espai']) ? $args['nom_espai'] : null, 'GET');
         $descriu = FormUtil::getPassedValue('descriu', isset($args['descriu']) ? $args['descriu'] : null, 'GET');
@@ -88,16 +88,12 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
         return true;
     }
 
-    /*
-      Funci� que esborra un espai o equip per reserva de la base de dades
-     */
-
-    function IWbookings_adminapi_delete($args) {
+    public function delete($args) {
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'POST');
 
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('You are not allowed to administrate the bookings'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
 
         //Comprovem que el par�metre identitat hagi arribat
@@ -132,13 +128,13 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
         return true;
     }
 
-    function IWbookings_adminapi_marcs($args) {
+    public function marcs($args) {
         //Comprovaci� de seguretat. Si falla retorna una matriu buida
         $regs = array();
 
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('Sorry! No authorization to access this module.'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
 
         $items = DBUtil::selectObjectArray('iw_timeframes_def', '', 'nom_marc');
@@ -150,12 +146,12 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
         return $regs;
     }
 
-    function IWbookings_adminapi_nom_marc($args) {
+    public function nom_marc($args) {
         $mdid = FormUtil::getPassedValue('mdid', isset($args['mdid']) ? $args['mdid'] : null, 'POST');
 
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('Sorry! No authorization to access this module.'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
 
         return DBUtil::selectField('iw_timeframes_def', 'nom_marc', 'mdid =' . $mdid);
@@ -166,7 +162,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
       Si l'espai est� acupat retorna dades i sin� retorna una variable buida
      */
 
-    function IWbookings_adminapi_reservat($args) {
+    public function reservat($args) {
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
         $start = FormUtil::getPassedValue('inici', isset($args['inici']) ? $args['inici'] : null, 'GET');
         $end = FormUtil::getPassedValue('final', isset($args['final']) ? $args['final'] : null, 'GET');
@@ -203,7 +199,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
       Funci� que fa una reserva temporal a la base da dades
      */
 
-    function IWbookings_adminapi_fer_reserva($args) {
+    public function fer_reserva($args) {
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
         $inici = FormUtil::getPassedValue('inici', isset($args['inici']) ? $args['inici'] : null, 'GET');
         $final = FormUtil::getPassedValue('final', isset($args['final']) ? $args['final'] : null, 'GET');
@@ -217,7 +213,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
         }
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
-            return LogUtil::registerError($this->__('You are not allowed to administrate the bookings'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
         // Get day of week
         $dow = date("w", DateUtil::makeTimeStamp($inici));
@@ -246,7 +242,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
       Funci� que anul�la una reserva temporal de la base de dades
      */
 
-    function IWbookings_adminapi_anulla($args) {
+    public function anulla($args) {
         $bid = FormUtil::getPassedValue('bid', isset($args['bid']) ? $args['bid'] : null, 'GET');
 
         //Comprovem que el par�metre id efectivament hagi arribat
@@ -273,7 +269,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
       Funci� que esborra un espai o equipament de reserva de la base de dades
      */
 
-    function IWbookings_adminapi_buida($args) {
+    public function buida($args) {
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'POST');
 
         //Comprovem que el par�metre id efectivament hagi arribat
@@ -309,7 +305,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
     }
 
     //Funci� que esborra totes les reserves i deixa buides les taules
-    function IWbookings_adminapi_deleteAllBookings() {
+    public function deleteAllBookings() {
         //Comprovaci� de seguretat
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
             LogUtil::registerError($this->__('You are not allowed to administrate the bookings'));

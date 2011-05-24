@@ -28,53 +28,55 @@
 {include file="IWbookings_admin_menu.htm"}
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='db_add.png' set='icons/large'}</div>
-    <div style="height:10px;">&nbsp;</div>
     <h2>{$accio}</h2>
-    <form  method="post" name="new_espai" id="new_espai" action="{modurl modname='IWbookings' type='admin' func='create'}" method="post" enctype="application/x-www-form-urlencoded">
+    <form  method="post" class="z-form" name="new_espai" id="new_espai" action="{modurl modname='IWbookings' type='admin' func='create'}" method="post" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
         <input type="hidden" name="sid" value="{$sid}" />
         <input type="hidden" name="m" value="{$m}" />
-        <table width="600" border="0" style="text-align:left;">
-            <tr>
-                <td>{gt text="Room or equipment name"}</td>
-                <td><input type="text" name="nom_espai" size="32" maxlength="55" value="{$nom_espai}"></td>
-            </tr>
-            <tr>
-                <td>{gt text="Description"}</td>
-                <td><input type="text" name="descriu" size="50" maxlength="200" value="{$descriu}"></td>
-            </tr>
-            <tr>
-                <td>{gt text="Associated color"}</td>
-                <td><input style='BACKGROUND-COLOR:{$color}' type="text" name="color" id="color" size="10" maxlength="10" value="{$color}">
-                    <A HREF="#" onClick="pick('pick');return false;" NAME="pick" ID="pick">{gt text="Choose color"}</A></td>
-            </tr>
-            {if $hi_ha_marcs}
-            <tr>
-                <td align="left">{gt text="Timetable"}</td>
-                <td>
-                    <select name="mdid">
-			{section name=marcs loop=$marcs}
-                        <option {if $mdid eq $marcs[marcs].id}selected{/if} value="{$marcs[marcs].id}">{$marcs[marcs].name}</option>
-		        {/section}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td align="left">{gt text="Table"}<br>{gt text="(Only works when a timetable is selected)"}</td>
-                <td>
-                    <input type="checkbox" name="vertical" {if $vertical}checked{/if}>
-                </td>
-            </tr>
-            {/if}
-            <tr>
-                <td>
-                    {gt text="Status (active/inactive)"}
-                </td>
-                <td>
-                    <input type="checkbox" name="actiu" {if $actiu}checked{/if}>
-                </td>
-            </tr>
-        </table>
-        <input type="button" onClick="javascript:send(0)" value="{$acciosubmit}">
+        <div class="z-formrow">
+            <label for="nom_espai">{gt text="Room or equipment name"}</label>
+            <input id="nom_espai" name="nom_espai" type="text" size="32" maxlength="70" value="{$nom_espai}" />
+        </div>
+        <div class="z-formrow">
+            <label for="descriu">{gt text="Description"}</label>
+            <input id="descriu" name="descriu" type="text" size="32" maxlength="200" value="{$descriu}" />
+        </div>
+        <div class="z-formrow">
+            <label for="color">{gt text="Associated color"}</label>
+            <div class="z-formnote">
+                <input style='background-color: {$color}' type="text" name="color" id="color" size="10" maxlength="10" value="{$color}">
+                <a href="#" onClick="pick('pick');return false;" name="pick" ID="pick">{gt text="Choose color"}</A></td>
+            </div>
+        </div>
+        {if $hi_ha_marcs}
+        <div class="z-formrow">
+            <label for="color">{gt text="Timetable"}</label>
+            <select name="mdid">
+                {section name=marcs loop=$marcs}
+                <option {if $mdid eq $marcs[marcs].id}selected{/if} value="{$marcs[marcs].id}">{$marcs[marcs].name}</option>
+                {/section}
+            </select>
+        </div>
+        <div class="z-formrow">
+            <label for="descriu">{gt text="Table<br />(Only works when a timetable is selected)"}</label>
+            <input type="checkbox" name="vertical" {if $vertical}checked{/if}>
+        </div>
+        {/if}
+        <div class="z-formrow">
+            <label for="descriu">{gt text="Status (active/inactive)"}</label>
+            <input type="checkbox" name="actiu" {if $actiu}checked{/if}>
+        </div>
+        <div class="z-center">
+            <span class="z-buttons">
+                <a title="Create" onClick="javascript:send(0)">
+                    {img modname='core' src='button_ok.png' set='icons/small' __alt="$acciosubmit" __title="$acciosubmit"} {$acciosubmit}
+                </a>
+            </span>
+            <span class="z-buttons">
+                <a href="{modurl modname='IWbookings' type='admin' func='main'}">
+                    {img modname='core' src='button_cancel.png' set='icons/small' __alt="Cancel" __title="Cancel"} {gt text="Cancel"}
+                </a>
+            </span>
+        </div>
     </form>
 </div>
