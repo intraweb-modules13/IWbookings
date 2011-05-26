@@ -160,11 +160,11 @@ class IWbookings_Api_User extends Zikula_AbstractApi {
 
 
         if ($format == 'ymd') {
-            $week[start] = DateUtil::getDatetime_NextDay((1 - $dow), '%Y-%m-%d', $fields[0], $fields[1], $fields[2]);
-            $week[end] = DateUtil::getDatetime_NextDay((7 - $dow), "%Y-%m-%d %H:%M:%S", $fields[0], $fields[1], $fields[2], 23, 59, 59);
+            $week['start'] = DateUtil::getDatetime_NextDay((1 - $dow), '%Y-%m-%d', $fields[0], $fields[1], $fields[2]);
+            $week['end'] = DateUtil::getDatetime_NextDay((7 - $dow), "%Y-%m-%d %H:%M:%S", $fields[0], $fields[1], $fields[2], 23, 59, 59);
         } else {
-            $week[start] = DateUtil::getDatetime_NextDay((1 - $dow), '%d-%m-%y', $fields[0], $fields[1], $fields[2]);
-            $week[end] = DateUtil::getDatetime_NextDay((7 - $dow), "%d-%m-%y", $fields[0], $fields[1], $fields[2]);
+            $week['start'] = DateUtil::getDatetime_NextDay((1 - $dow), '%d-%m-%y', $fields[0], $fields[1], $fields[2]);
+            $week['end'] = DateUtil::getDatetime_NextDay((7 - $dow), "%d-%m-%y", $fields[0], $fields[1], $fields[2]);
         }
         return $week;
     }
@@ -185,10 +185,10 @@ class IWbookings_Api_User extends Zikula_AbstractApi {
 
         $fields = explode('-', $TheDate);
 
-        $result[nextweek] = DateUtil::getDatetime_NextWeek(1, '%d-%m-%y', $fields[0], $fields[1], $fields[2]);
-        $result[prevweek] = DateUtil::getDatetime_NextWeek(-1, '%d-%m-%y', $fields[0], $fields[1], $fields[2]);
-        $result[nextmonth] = DateUtil::getDatetime_NextMonth(1, '%d-%m-%y', $fields[0], $fields[1], $fields[2]);
-        $result[prevmonth] = DateUtil::getDatetime_NextMonth(-1, '%d-%m-%y', $fields[0], $fields[1], $fields[2]);
+        $result['nextweek'] = DateUtil::getDatetime_NextWeek(1, '%d-%m-%y', $fields[0], $fields[1], $fields[2]);
+        $result['prevweek'] = DateUtil::getDatetime_NextWeek(-1, '%d-%m-%y', $fields[0], $fields[1], $fields[2]);
+        $result['nextmonth'] = DateUtil::getDatetime_NextMonth(1, '%d-%m-%y', $fields[0], $fields[1], $fields[2]);
+        $result['prevmonth'] = DateUtil::getDatetime_NextMonth(-1, '%d-%m-%y', $fields[0], $fields[1], $fields[2]);
 
         return $result;
     }

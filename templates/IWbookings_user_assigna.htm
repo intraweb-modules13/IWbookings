@@ -1,21 +1,30 @@
 {$menu}
-{getstatusmsg}
-{if $statusmsg neq ""}
-    <p style="border:1px solid #0f0; background-color:#ffc; padding:10px;">{$statusmsg}</p>
-{/if}
+{insert name="getstatusmsg"}
 <div>
     {if $noTable}
-    <div class="z-form">{$formulari}</div>
-    <div class="z-usercalendari">{$calendari}</div>
-    <div class="z-datatable">{$taula}<br></div>
+    <div class="z-form">
+        {$formulari}
+    </div>
+    <div class="z-usercalendari">
+        {$calendari}
+    </div>
+    <div class="z-datatable">
+        {$taula}
+        <br />
+    </div>
     {else}
         {if $showontop}
-            <div class="z-form">{$formulari}<br></div>
+            <div class="z-form">
+                {$formulari}
+            </div>
         {/if}
-        <div class="z-usercalendari">{$calendari}</div>
-        <div class="z-datatable"> {$taula}</div>
+        <div class="z-usercalendari">
+            {$calendari}
+        </div>
+        <div class="z-datatable">
+            {$taula}
+        </div>
     {/if}
-    <a href={modurl modname="IWbookings" func="module"}>{gt text="About this module"}</a>
 </div>
 
 
