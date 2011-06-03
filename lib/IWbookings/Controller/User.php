@@ -29,10 +29,10 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
 
         if (ModUtil::getVar('IWbookings', 'month_panel')) {
             System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => -1,
-                                'mensual' => 1)));
+                        'mensual' => 1)));
         } else {
             System::redirect(ModUtil::url('IWbookings', 'user', 'espais', array('sid' => -1,
-                                'mensual' => 0)));
+                        'mensual' => 0)));
         }
 
         return true;
@@ -127,7 +127,6 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         }
 
         if ($sid <> -1) {
-            //Es crida la funci� API que retorna les dades de l'espai que volem reservar
             $nom = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
             $marc = $nom['mdid'];
             //Per si falla la c�rrega de les dades
@@ -194,6 +193,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
                         'nextMonth' => $jumpDates['nextmonth'],
                         'mensual' => $mensual,
                         'showontop' => $showontop));
+
             if (empty($taula) || empty($formulari)) {
                 LogUtil::registerError($this->__('An error has occurred when loading the table or the form'));
                 return System::redirect(ModUtil::url('IWbookings', 'admin', 'main'));
@@ -412,13 +412,19 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
             throw new Zikula_Exception_Forbidden();
         }
 
-        $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
+        $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GETPOST');
         $mensual = FormUtil::getPassedValue('mensual', isset($args['mensual']) ? $args['mensual'] : null, 'GET');
         $currentDate = FormUtil::getPassedValue('currentDate', isset($args['currentDate']) ? $args['currentDate'] : null, 'GET');
         $canbook = FormUtil::getPassedValue('canbook', isset($args['canbook']) ? $args['canbook'] : false, 'GET');
 
         //Array amb els noms dels dies de la setmana
-        $dies = array($this->__('Monday'), $this->__('Tuesday'), $this->__('Wednesday'), $this->__('Thursday'), $this->__('Friday'), $this->__('Saturday'), $this->__('Sunday'));
+        $dies = array($this->__('Monday'),
+            $this->__('Tuesday'),
+            $this->__('Wednesday'),
+            $this->__('Thursday'),
+            $this->__('Friday'),
+            $this->__('Saturday'),
+            $this->__('Sunday'));
 
         //D'entrada farem que les taules es mostrin de forma horitzontal. Despr�s, si
         //hi ha un marc horari definit canviarem al que correspongui
@@ -597,14 +603,14 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
                     ->assign('record', $taula)
                     ->assign('now', $now);
         }
-        return $this->view->assign('vertical', $vertical)
+        $this->view->assign('vertical', $vertical)
                 ->assign('canbook', $canbook)
                 ->assign('sid', $sid)
                 ->assign('dies', $dies)
                 ->assign('date', date('Y-m-d', strtotime($currentDate)))
                 ->assign('d', date('d-m-y', strtotime($currentDate)))
-                ->assign('periode', $this->__('Period from ') . date('d-m-Y', strtotime($startDate)) . $this->__(' to ') . date('d-m-Y', strtotime($endDate)))
-                ->fetch('IWbookings_user_taula.htm');
+                ->assign('periode', $this->__('Period from ') . date('d-m-Y', strtotime($startDate)) . $this->__(' to ') . date('d-m-Y', strtotime($endDate)));
+        return $this->view->fetch('IWbookings_user_taula.htm');
     }
 
 //END mostra_taula
@@ -645,8 +651,8 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
             // User is triying to delete a book from another user
             LogUtil::registerError($this->__('You are not allowed to cancel bookings from other people'));
             System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid,
-                                'mensual' => $mensual,
-                                'd' => $cdate)));
+                        'mensual' => $mensual,
+                        'd' => $cdate)));
             return true;
         }
 
@@ -692,8 +698,8 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         }
 
         System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid,
-                            'mensual' => $mensual,
-                            'd' => $cdate)));
+                    'mensual' => $mensual,
+                    'd' => $cdate)));
         return true;
     }
 
@@ -838,7 +844,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
                         $reserva['bid'] = $booking['bid'];
                         $reserva['grup'] = $booking['grup'];
                         $reserva['space'] = (isset($booking['sid'])) ? $space_info[$booking['sid']]['name'] : '';
-                        $reserva['color'] = (isset($booking['sid'])) ? $space_info[$booking['sid']]['color']: '';
+                        $reserva['color'] = (isset($booking['sid'])) ? $space_info[$booking['sid']]['color'] : '';
                         $reserva['temp'] = $booking['temp'];
                         $booking['usuari'] = (!isset($booking['usuari'])) ? 0 : $booking['usuari'];
 
@@ -852,12 +858,12 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
 
                         $reserva['hour'] = date('H:i', strtotime($booking['inici'])) . "-" . date('H:i', strtotime($booking['final']));
                         if ($booking['usuari'] > 0) {
-                        $reserva['uname'] = ModUtil::func('IWmain', 'user', 'getUserInfo', array('uid' => $booking['usuari'],
-                                    'sv' => ModUtil::func('IWmain', 'user', 'genSecurityValue'),
-                                    'info' => 'u'));
-                        $reserva['user'] = ModUtil::func('IWmain', 'user', 'getUserInfo', array('uid' => $booking['usuari'],
-                                    'sv' => ModUtil::func('IWmain', 'user', 'genSecurityValue'),
-                                    'info' => 'ncc'));
+                            $reserva['uname'] = ModUtil::func('IWmain', 'user', 'getUserInfo', array('uid' => $booking['usuari'],
+                                        'sv' => ModUtil::func('IWmain', 'user', 'genSecurityValue'),
+                                        'info' => 'u'));
+                            $reserva['user'] = ModUtil::func('IWmain', 'user', 'getUserInfo', array('uid' => $booking['usuari'],
+                                        'sv' => ModUtil::func('IWmain', 'user', 'genSecurityValue'),
+                                        'info' => 'ncc'));
                         } else {
                             $reserva['uname'] = '';
                             $reserva['user'] = '';
@@ -982,9 +988,9 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         if (empty($group)) {
             LogUtil::registerError($this->__('You must specify a group'));
             System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid,
-                                'fh' => $fh,
-                                'dow' => $dow,
-                                'd' => $bookingDate)));
+                        'fh' => $fh,
+                        'dow' => $dow,
+                        'd' => $bookingDate)));
             return true;
         }
 
@@ -1079,10 +1085,9 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
             }
             // Book receipt
             LogUtil::registerStatus("<b>[ " . $this->__('Booking receipt') . " ]</b><br />" . $this->__('Booking day: ') . ": <b> " . $bookingDate . "</b><br/>" . $this->__('Time: ') . ": <b>" . $horari
-                            . "</b><br />" . $this->__('Group: ') . ": <b>" . $group . "</b><br />" . $this->__('Reason for booking') . ": <b>" . $reason . "</b><br />"
-                            . $this->__('Repeat next weeks') . ": <b>" . $nsessions . "<br /><br /><b>" . $msg);
+                    . "</b><br />" . $this->__('Group: ') . ": <b>" . $group . "</b><br />" . $this->__('Reason for booking') . ": <b>" . $reason . "</b><br />"
+                    . $this->__('Repeat next weeks') . ": <b>" . $nsessions . "<br /><br /><b>" . $msg);
         } else {
-            //print_r($reserved);die();
             // Launch error message with reserved frames
             $message = $this->__('Booking failed! The following times are reserved:') . '<ul>';
             foreach ($reserved as $r) {
@@ -1172,7 +1177,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
 
         if ($sid < 0) {
             System::redirect(ModUtil::url('IWbookings', 'user', 'espais', array('sid' => $sid,
-                                'mensual' => $mensual)));
+                        'mensual' => $mensual)));
         } else {
             ($mensual == 1) ? System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid,
                                         'mensual' => 1))) :
