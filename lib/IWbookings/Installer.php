@@ -18,14 +18,15 @@ class IWbookings_Installer extends Zikula_AbstractInstaller {
 
         // Check if the version needed is correct
         $versionNeeded = '3.0.0';
-        if (!ModUtil::func('IWmain', 'admin', 'checkVersion',
-                        array('version' => $versionNeeded))) {
+        if (!ModUtil::func('IWmain', 'admin', 'checkVersion', array('version' => $versionNeeded))) {
             return false;
         }
 
         // Create module tables
-        if (!DBUtil::createTable('IWbookings')) return false;
-        if (!DBUtil::createTable('IWbookings_spaces')) return false;
+        if (!DBUtil::createTable('IWbookings'))
+            return false;
+        if (!DBUtil::createTable('IWbookings_spaces'))
+            return false;
 
         //Create indexes
         $pntable = DBUtil::getTables();
@@ -73,18 +74,55 @@ class IWbookings_Installer extends Zikula_AbstractInstaller {
     /**
      * Update the IWbookings module
      * @author Albert Pérez Monfort (aperezm@xtec.cat)
+     * @author Jaume Fernàndez Valiente (jfern343@xtec.cat)
      * @return bool true if successful, false otherwise
      */
     function upgrade($oldversion) {
-        if ($oldversion < 1.1) {
-            if (!DBUtil::changeTable('IWbookings')) return false;
-            //Create indexes
-            $pntable = DBUtil::getTables();
-            $c = $pntable['IWbookings_column'];
-            if (!DBUtil::createIndex($c['sid'], 'IWbookings', 'sid')) return false;
-            if (!DBUtil::createIndex($c['start'], 'IWbookings', 'start')) return false;
+
+        $prefix = $GLOBALS['ZConfig']['System']['prefix'];
+
+        //Delete unneeded tables
+        DBUtil::dropTable('iw_noteboard_public');
+
+        //Rename tables
+        if (!DBUtil::renameTable('iw_bookings', 'IWbookings'))
+            return false;
+        if (!DBUtil::renameTable('iw_bookings_spaces', 'IWbookings_spaces'))
+            return false;
+
+
+        // Update module_vars table
+        // Update the name (keeps old var value)
+        $c = "UPDATE {$prefix}_module_vars SET z_modname = 'IWnoteboard' WHERE z_bkey = 'iw_noteboard'";
+        if (!DBUtil::executeSQL($c)) {
+            return false;
         }
-        // Update successful
+
+        //Array de noms
+        $oldVarsNames = DBUtil::selectFieldArray("module_vars", 'name', "`z_modname` = 'IWforms'", '', false, '');
+
+        $newVarsNames = Array('group', 'weeks', 'month_panel', 'weekends', 'eraseold', 'showcolors', 'NTPtime');
+
+        $newVars = Array('group' => '',
+            'weeks' => '1',
+            'month_panel' => '0',
+            'weekends' => '0',
+            'eraseold' => '1',
+            'showcolors' => '0',
+            'NTPtime' => '0');
+
+        // Delete unneeded vars
+        $del = array_diff($oldVarsNames, $newVarsNames);
+        foreach ($del as $i) {
+            $this->delVar($i);
+        }
+
+        // Add new vars
+        $add = array_diff($newVarsNames, $oldVarsNames);
+        foreach ($add as $i) {
+            $this->setVar($i, $newVars[$i]);
+        }
+
         return true;
     }
 
