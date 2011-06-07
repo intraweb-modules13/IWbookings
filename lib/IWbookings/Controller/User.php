@@ -149,7 +149,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
             // Weeks beyond num. weeks limit are not allowed
             $weekslimit = ModUtil::getVar('IWbookings', 'weeks');
-            if (($weekslimit > 0 ) and ($diff[d] < -7 * $weekslimit)) {
+            if (($weekslimit > 0 ) and ($diff['d'] < -7 * $weekslimit)) {
                 $currentDate = DateUtil::getDatetime(DateUtil::makeTimestamp() + $weekslimit * 7 * 24 * 60 * 60, '%Y-%m-%d');
                 LogUtil::registerError($this->__('Bookings can only be made for the following ') . $weekslimit . $this->__(' week(s). Booking date is not valid'));
             }
@@ -194,10 +194,12 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
                         'mensual' => $mensual,
                         'showontop' => $showontop));
 
-            if (empty($taula) || empty($formulari)) {
+            
+             // anteriorment: (empty($taula) || empty($formulari))
+         /*   if ($taula == '' || empty($formulari)) {
                 LogUtil::registerError($this->__('An error has occurred when loading the table or the form'));
-                return System::redirect(ModUtil::url('IWbookings', 'admin', 'main'));
-            }
+                return System::redirect(ModUtil::url('IWbookings', 'user', 'main'));
+            }*/
         }
         $space = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
         // Not show in tabular format
@@ -406,7 +408,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
      * @author	Josep Ferràndiz Farré (jferran6@xtec.cat)
      * @return	List or table with the bookings
      */
-    public function taula($args) {
+    public function taula($args) {    
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_READ)) {
             throw new Zikula_Exception_Forbidden();
@@ -431,7 +433,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         $vertical = 0;
         //(ModUtil::getVar('IWbookings', 'eraseold')==1)?
         //$actualitza=ModUtil::apiFunc('IWbookings','user','esborra_antigues', array('sid'=> $sid, 'mensual'=> $mensual)):"";
-        // Get space info
+        // Get space info          
         $espai = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
         //Per si falla la c�rrega de les dades
         if ($espai == false) {
@@ -1115,13 +1117,13 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
 
         $mensual = FormUtil::getPassedValue('mensual', isset($args['mensual']) ? $args['mensual'] : null, 'GET');
 
-        //Afegim el men� de l'usuari
+        //Afegim el menú de l'usuari
         $menu = ModUtil::func('IWbookings', 'user', 'menu', array('mensual' => $mensual));
 
-        //Cridem la funci� API que retornar� la informaci� de tots els espais de reserva definits
+        //Cridem la funció API que retornarà la informació de tots els espais de reserva definits
         $registres = ModUtil::apiFunc('IWbookings', 'user', 'getall');
 
-        //Call getall i que retornar� la informaci�
+        //Call getall i que retornarà la informació
         $items = ModUtil::apiFunc('IWbookings', 'user', 'getall');
         //Are defined booking locations?
         (empty($items)) ? $hi_ha_espais = false : $hi_ha_espais = true;
