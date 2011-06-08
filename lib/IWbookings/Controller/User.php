@@ -194,12 +194,12 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
                         'mensual' => $mensual,
                         'showontop' => $showontop));
 
-            
-             // anteriorment: (empty($taula) || empty($formulari))
-         /*   if ($taula == '' || empty($formulari)) {
-                LogUtil::registerError($this->__('An error has occurred when loading the table or the form'));
-                return System::redirect(ModUtil::url('IWbookings', 'user', 'main'));
-            }*/
+
+            // anteriorment: (empty($taula) || empty($formulari))
+            /*   if ($taula == '' || empty($formulari)) {
+              LogUtil::registerError($this->__('An error has occurred when loading the table or the form'));
+              return System::redirect(ModUtil::url('IWbookings', 'user', 'main'));
+              } */
         }
         $space = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
         // Not show in tabular format
@@ -408,7 +408,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
      * @author	Josep Ferràndiz Farré (jferran6@xtec.cat)
      * @return	List or table with the bookings
      */
-    public function taula($args) {    
+    public function taula($args) {
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_READ)) {
             throw new Zikula_Exception_Forbidden();
@@ -986,9 +986,22 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
 
         $startBooking = DateUtil::buildDatetime($d[2], $d[1], $d[0], $t_inici[0], $t_inici[1], 0, '%Y-%m-%d %H:%M:%S');
         $endBooking = DateUtil::buildDatetime($d[2], $d[1], $d[0], $t_final[0], $t_final[1], 0, '%Y-%m-%d %H:%M:%S');
-
+      
+        $sb = DateUtil::makeTimeStamp($startBooking);
+        $eb = DateUtil::makeTimeStamp($endBooking);
+        
         if (empty($group)) {
             LogUtil::registerError($this->__('You must specify a group'));
+            System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid,
+                        'fh' => $fh,
+                        'dow' => $dow,
+                        'd' => $bookingDate)));
+            return true;
+        }
+        
+        //Check if start date < end date
+        if ($sb > $eb) {
+            LogUtil::registerError($this->__('Finish time is minnor than start time'));
             System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid,
                         'fh' => $fh,
                         'dow' => $dow,
@@ -1011,8 +1024,6 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
             }
         }
 
-        $sb = DateUtil::makeTimeStamp($startBooking);
-        $eb = DateUtil::makeTimeStamp($endBooking);
 
         // get nsessions from finish_date
         if ($book_end == 'date') {
@@ -1057,6 +1068,8 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
             }
         }
 
+           
+        
         // Check if the requested bookings is possible
         $reserved = array();
         foreach ($bookingDates as $bd) {
@@ -1205,6 +1218,19 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         // Substitutes new line by <br />
         $text = preg_replace('/(?<!>)\n/', "<br />", $text);
         return $text;
+    }
+
+    public function check_date($start, $end) {
+        $exp_date = "2006-01-16";
+        $todays_date = date("Y-m-d");
+        $today = strtotime($todays_date);
+        $expiration_date = strtotime($exp_date);
+
+        if ($expiration_date > $today) {
+            $valid = "yes";
+        } else {
+            $valid = "no";
+        }
     }
 
 }
