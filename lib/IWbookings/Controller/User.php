@@ -1220,17 +1220,4 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         return $text;
     }
 
-    public function check_date($start, $end) {
-        $exp_date = "2006-01-16";
-        $todays_date = date("Y-m-d");
-        $today = strtotime($todays_date);
-        $expiration_date = strtotime($exp_date);
-
-        if ($expiration_date > $today) {
-            $valid = "yes";
-        } else {
-            $valid = "no";
-        }
-    }
-
 }
