@@ -13,7 +13,9 @@
             <th align="center" bgcolor="{$espais[espais].color}">{$espais[espais].nom_espai}</th>
             <td align="center" bgcolor="{$espais[espais].color}">{$espais[espais].descriu}</td>
             <th align="center" bgcolor="{$espais[espais].color}">
-                <a href={modurl modname="IWbookings" type="user" func="assigna" sid=$espais[espais].sid mensual=$mensual}>{$action}</a>
+                <a href="{modurl modname='IWbookings' type='user' func='assigna' sid=$espais[espais].sid mensual=$mensual}">
+                    {$action}
+                </a>
             </th>
         <tr><th colspan = "100%" style="padding:0.5px ;background-color:#666666"></th></tr>
         {/section}

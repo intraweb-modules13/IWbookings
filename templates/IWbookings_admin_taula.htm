@@ -17,7 +17,7 @@
             {$record[reg][hora].grup}<br>
 
             <a href="{modurl modname='IWbookings' type='admin' func='anulla' bid=$record[reg][hora].bid sid=$sid}">
-                {img modname='core' src='button_cancel.gif' set='icons/extrasmall'   __alt="Cancel" __title="Cancel"}
+                {img modname='core' src='button_cancel.png' set='icons/extrasmall'   __alt="Cancel" __title="Cancel"}
             </a>
         </td>
         {/section}
@@ -49,14 +49,14 @@
                 <font color="green"><b>{gt text="Preferential"}</b></font><br>
                 {/if}
                 {$record[franja][col].usuari}<br>{$record[franja][col].grup}<br>
-                <a href={modurl modname="IWbookings" type="admin" func="anulla" bid=$record[franja][col].bid sid=$sid}>
-                    {img modname='core' src='button_cancel.gif' set='icons/extrasmall'   __alt="Cancel" __title="Cancel"}
+                <a href="{modurl modname='IWbookings' type='admin' func='anulla' bid=$record[franja][col].bid sid=$sid}">
+                    {img modname='core' src='button_cancel.png' set='icons/extrasmall'   __alt="Cancel" __title="Cancel"}
                 </a>
                 {else}
             <td align="center" style="background:#88FF66;  width:19%; color:#000000; border:none; padding:5px;">
                 <!-- ************ Enllaç per reservar directament / Link for booking directly ************* -->
-                <a href={modurl modname="IWbookings" type="admin" func="assigna" sid=$sid dow=$smarty.section.col.index fh=$smarty.section.franja.index}>
-                    {img modname='core' src='vcalendar.gif' set='icons/extrasmall'   __alt="Assign" __title="Assign"}
+                <a href="{modurl modname='IWbookings' type='admin' func='assigna' sid=$sid dow=$smarty.section.col.index fh=$smarty.section.franja.index}">
+                    {img modname='core' src='vcalendar.png' set='icons/extrasmall'   __alt="Assign" __title="Assign"}
                 </a>
                 {/if}
             </td>

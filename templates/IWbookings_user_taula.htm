@@ -21,7 +21,7 @@
                         {$record[reg][hora].usuari}<br>
                         {$record[reg][hora].grup}<br><i>{$record[reg][hora].motiu}</i><br>
                         {if $record[reg][hora].candelete}
-                        <a href={modurl modname="IWbookings" type="user" func="anulla" bid=$record[reg][hora].bid sid=$sid d= $d}>
+                        <a href="{modurl modname='IWbookings' type='user' func='anulla' bid=$record[reg][hora].bid sid=$sid d= $d}">
                             {img modname='core' src='button_cancel.png' set='icons/extrasmall'   __alt="Cancel" __title="Cancel"}
                         </a>
                         {/if}
@@ -64,7 +64,7 @@
                 {$record[franja][col].motiu}</i><br>
             {************* Show or not delete button ************}
             {if $record[franja][col].candelete}
-            <a href={modurl modname="IWbookings" func="anulla" bid=$record[franja][col].bid sid=$sid d=$dies_data[$smarty.section.col.index]}>
+            <a href="{modurl modname='IWbookings' type='user' func='anulla' bid=$record[franja][col].bid sid=$sid d=$dies_data[$smarty.section.col.index]}">
                 {img modname='core' src='button_cancel.png' set='icons/extrasmall'   __alt="Cancel" __title="Cancel"}
             </a>
             {/if}
@@ -74,7 +74,7 @@
             {if $record[franja][col].final >= $now}
         <td align="right" style="background:#88FF66; width:14%; color:#000000; border:none; padding:5px;">
             {if $canbook}
-            <a href={modurl modname="IWbookings" func="assigna" sid=$sid dow=$smarty.section.col.index fh=$smarty.section.franja.index d=$dies_data[$smarty.section.col.index] sot=1}>
+            <a href="{modurl modname='IWbookings' type='user' func='assigna' sid=$sid dow=$smarty.section.col.index fh=$smarty.section.franja.index d=$dies_data[$smarty.section.col.index] sot=1}">
                 {img modname='core' src='vcalendar.png' set='icons/extrasmall'   __alt="Assign" __title="Assign"}
             </a>
             {/if}

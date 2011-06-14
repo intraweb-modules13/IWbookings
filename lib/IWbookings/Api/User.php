@@ -49,12 +49,12 @@ class IWbookings_Api_User extends Zikula_AbstractApi {
         }
 
         $pntable = DBUtil::getTables();
-        $column = $pntable['iw_timeframes_column'];
+        $column = $pntable['IWtimeframes_column'];
         $where = "$column[mdid] = " . DataUtil::formatForStore($mdid);
         $orderBy = "$column[start]";
-        $items = DBUtil::selectObjectArray('iw_timeframes', $where, $orderBy);
+        $items = DBUtil::selectObjectArray('IWtimeframes', $where, $orderBy);
 
-        //$items = DBUtil::selectObjectArray('iw_timeframes', 'mdid='.$mdid, $orderby);
+        //$items = DBUtil::selectObjectArray('IWtimeframes', 'mdid='.$mdid, $orderby);
         foreach ($items as $item) {
             $registres[] = array('hora' => date('H:i', strtotime($item['start'])) . " - " . date('H:i', strtotime($item['end'])),
                 'descriu' => $item['descriu']);
@@ -74,7 +74,7 @@ class IWbookings_Api_User extends Zikula_AbstractApi {
         }
 
         $orderby = "start";
-        $items = DBUtil::selectObjectArray('iw_timeframes', 'mdid=' . $mdid, $orderby);
+        $items = DBUtil::selectObjectArray('IWtimeframes', 'mdid=' . $mdid, $orderby);
 
         foreach ($items as $item) {
             $registres[] = array(
@@ -96,7 +96,7 @@ class IWbookings_Api_User extends Zikula_AbstractApi {
             return LogUtil::registerError($this->__('Sorry! No authorization to access this module.'), 403);
         }
 
-        $items = DBUtil::selectObjectArray('iw_timeframes_def', '', 'nom_marc');
+        $items = DBUtil::selectObjectArray('IWtimeframes_definition', '', 'nom_marc');
         $regs[] = array('id' => '0', 'name' => '');
         foreach ($items as $item) {
             $regs[] = array('id' => $item[mdid], 'name' => $item[nom_marc]);

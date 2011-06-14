@@ -70,31 +70,31 @@ function IWbookings_tables() {
 
     ObjectUtil::addStandardFieldsToTableDefinition($table['IWbookings_spaces_column'], 'pn_');
     ObjectUtil::addStandardFieldsToTableDataDefinition($table['IWbookings_spaces_column_def'], 'iw_');
-    /*
-      // IWmain table definition needed in this module
-      $table['IWmain'] = DBUtil::getLimitedTablename('IWmain');
-      $table['IWmain_column'] = array('id' => 'iw_id',
-      'uid' => 'iw_uid',
-      'module' => 'iw_module',
-      'name' => 'iw_name',
-      'value' => 'iw_value',
-      'lifetime' => 'iw_lifetime');
 
-      // iw_timeframes table definition needed in this module
+    // IWmain table definition needed in this module
+    $table['IWmain'] = DBUtil::getLimitedTablename('IWmain');
+    $table['IWmain_column'] = array('id' => 'iw_id',
+        'uid' => 'iw_uid',
+        'module' => 'iw_module',
+        'name' => 'iw_name',
+        'value' => 'iw_value',
+        'lifetime' => 'iw_lifetime');
 
-      $table['iw_timeframes'] = DBUtil::getLimitedTablename('iw_timeframes');
-      $table['iw_timeframes_column'] = array('hid' => 'hid',
-      'mdid' => 'mdid',
-      'start' => 'start',
-      'end' => 'end',
-      'descriu' => 'descriu');
+    // iw_timeframes table definition needed in this module
+
+    $table['IWtimeframes'] = DBUtil::getLimitedTablename('IWtimeframes');
+    $table['IWtimeframes_column'] = array('hid' => 'hid',
+        'mdid' => 'mdid',
+        'start' => 'start',
+        'end' => 'end',
+        'descriu' => 'descriu');
 
 
-      $table['iw_timeframes_def'] = DBUtil::getLimitedTablename('iw_timeframes_def');
-      $table['iw_timeframes_def_column'] = array('mdid' => 'mdid',
-      'nom_marc' => 'nom_marc',
-      'descriu' => 'descriu');
-     */
+    $table['IWtimeframes_definition'] = DBUtil::getLimitedTablename('IWtimeframes_definition');
+    $table['IWtimeframes_definition_column'] = array('mdid' => 'mdid',
+        'nom_marc' => 'nom_marc',
+        'descriu' => 'descriu');
+
     // Return the table information
     return $table;
 }

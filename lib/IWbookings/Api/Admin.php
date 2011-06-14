@@ -137,7 +137,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
             throw new Zikula_Exception_Forbidden();
         }
 
-        $items = DBUtil::selectObjectArray('iw_timeframes_def', '', 'nom_marc');
+        $items = DBUtil::selectObjectArray('IWtimeframes_definition', '', 'nom_marc');
         $regs[] = array('id' => '0', 'name' => '');
         foreach ($items as $item) {
             $regs[] = array('id' => $item[mdid], 'name' => $item[nom_marc]);
@@ -154,7 +154,7 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
             throw new Zikula_Exception_Forbidden();
         }
 
-        return DBUtil::selectField('iw_timeframes_def', 'nom_marc', 'mdid =' . $mdid);
+        return DBUtil::selectField('IWtimeframes_definition', 'nom_marc', 'mdid =' . $mdid);
     }
 
     /*
