@@ -12,7 +12,13 @@
         $('frames_link').hide();
         $('frames').show();
     }
-	
+
+    function hide_frames()
+    {
+        $('frames_link').show();
+        $('frames').hide();
+    }
+
     function change_frame(frame)
     {
         if ($('chk_'+frame).checked){
@@ -21,6 +27,7 @@
                 $('chk_'+newframe).enable();
                 $('frame_'+newframe).style.fontStyle = 'normal';
             }
+          
         }else{
             newframe = ++frame;
             while ($('chk_'+newframe) != undefined){
@@ -30,9 +37,12 @@
                 newframe = ++frame;
             }
         }
+        add_frames($('period_fix').value);
     }
-	
+
+
     function add_frames(bydefault){
+  
         empty = true;
         frame = 0;
         next = true;
@@ -54,9 +64,7 @@
         }else{
             time = start_time+' - '+finish_time;
         }
-        $('hora').value = time;
-        $('frames_link').show();
-        $('frames').hide();
+        $('hora').value = time;        
         $('period').update(time);
     }
 </script>
@@ -74,6 +82,7 @@
             <input name="hora" id="hora" value="{$period}" type="hidden" />
             <input name="dia" value="{$dayofweek1}" type="hidden" />
             <input name="bookingDate" value="{$bookingDate}" type="hidden" />
+            <input name="period_fix" id ="period_fix" value="{$period}" type="hidden" />
             <tr>
                 <td align="right">
                     <b>{gt text="Booking day: "}</b></td><td>{$diasetmana}, {$bookingDate}
@@ -112,7 +121,7 @@
                         <div id="frame_{$franja.pos}">
                             <input type="checkbox" id="chk_{$franja.pos}" name="frame" value="{$franja.id}" onclick="change_frame({$franja.pos})" />&nbsp;{$franja.name}
                         </div>
-                        {else}
+                       {else}
                         <div id="frame_{$franja.pos}" style="font-style:italic;">
                             <input type="checkbox" id="chk_{$franja.pos}" name="frame" value="{$franja.id}" onclick="change_frame({$franja.pos})" disabled="true" />
                             {$franja.name}
@@ -120,7 +129,7 @@
                         {/if}
                         {/if}
                         {/foreach}
-                        <a style="font-size:x-small;" href="#" onclick="add_frames('{$period}')">{gt text="Add selected frames"}</a>
+                        <a style="font-size:x-small;" href="#" onclick="hide_frames()">{gt text="Hide frame selection"}</a>
                     </div>
                 </td>
                 <td>&nbsp;</td>

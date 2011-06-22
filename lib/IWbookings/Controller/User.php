@@ -273,10 +273,12 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         if ($espai['mdid'] != 0) {
             //Busquem les franges hor�ries i les tornem en forma de matriu per un MultiSelect
             $franges = ModUtil::apiFunc('IWbookings', 'user', 'getall_hores_MS', array('mdid' => $espai['mdid']));
+            $period = $franges[$fh]['id'];
         }
 
-        $period = (isset($period) && $period >= 0) ? $franges[$fh]['id'] : null;
-        //Constru�m l'array dels dies per el formulari
+        //$period = (isset($period) && $period >= 0) ? $franges[$fh]['id'] : null;
+        //echo "<pre>"; var_dump($franges); echo "</pre>";
+        //Construim l'array dels dies per el formulari
         (ModUtil::getVar('IWbookings', 'weekends')) ?
                         $dia = array(array('id' => '1', 'name' => $this->__('Monday')),
                     array('id' => '2', 'name' => $this->__('Tuesday')),
@@ -363,7 +365,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
 
         // Extra frames to add
         $found = false;
-        $franges = array();
+        //$franges = array();
         $extra_frames = array();
         if ($espai['mdid'] != 0) {
             $i = 0;
@@ -959,7 +961,8 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         if ($hora) { // Space has got timeFrame
             $mdid = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
             $mdid = $mdid['mdid'];
-            $frames = ModUtil::apiFunc('iw_timeFrames', 'user', 'getall_horari', array('mdid' => $mdid));
+
+            $frames = ModUtil::apiFunc('IWtimeframes', 'user', 'getall_horari', array('mdid' => $mdid));
             $t = explode(' - ', $hora);
             $t_inici = explode(':', $t[0]);
             $t_final = explode(':', $t[1]);

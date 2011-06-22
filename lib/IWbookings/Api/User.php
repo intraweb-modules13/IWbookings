@@ -54,7 +54,7 @@ class IWbookings_Api_User extends Zikula_AbstractApi {
         $orderBy = "$column[start]";
         $items = DBUtil::selectObjectArray('IWtimeframes', $where, $orderBy);
 
-        //$items = DBUtil::selectObjectArray('IWtimeframes', 'mdid='.$mdid, $orderby);
+        //$items = DBUtil::selectObjectArray('iw_timeframes', 'mdid='.$mdid, $orderby);
         foreach ($items as $item) {
             $registres[] = array('hora' => date('H:i', strtotime($item['start'])) . " - " . date('H:i', strtotime($item['end'])),
                 'descriu' => $item['descriu']);
