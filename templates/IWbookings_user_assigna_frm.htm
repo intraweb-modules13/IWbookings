@@ -1,10 +1,3 @@
-{if !empty($sot)}
-<link rel="stylesheet" type="text/css" href="modules/IWmain/js/calendar/css/calendar-blue.css" />	
-<script type="text/javascript" src="modules/IWmain/js/calendar/calendar.js"></script>
-<script type="text/javascript" src="modules/IWmain/js/calendar/calendar-setup.js"></script>
-<script type="text/javascript" src="modules/IWmain/js/calendar/calendar-ca.js"></script>
-{/if}
-
 <script type="text/javascript" src="javascript/ajax/prototype.js"></script>
 <script type="text/javascript">
     function show_frames()
@@ -310,15 +303,3 @@
 </form>
 
 </div>
-{*}
-<script type="text/javascript">	
-    Calendar.setup({
-        inputField: "date_input", // id of the input field
-        ifFormat: "%d-%m-%Y", // format of the input field
-        showsTime: false, // will display a time selector
-        button: "date_input", // trigger for the calendar (button ID)
-        singleClick: true, // double-click mode
-        step: 2 // show all years in drop-down boxes (instead of every other year as default)
-    });
-</script>
-{*}
