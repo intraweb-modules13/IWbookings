@@ -45,7 +45,7 @@
             <label for="color">{gt text="Associated color"}</label>
             <div class="z-formnote">
                 <input style='background-color: {$color}' type="text" name="color" id="color" size="10" maxlength="10" value="{$color}">
-                <a href="#" onClick="pick('pick');return false;" name="pick" ID="pick">{gt text="Choose color"}</A></td>
+                <a href="#" onClick="pick('pick');return false;" name="pick" ID="pick">{gt text="Choose color"}</a>
             </div>
         </div>
         {if $hi_ha_marcs}
@@ -64,7 +64,7 @@
         {/if}
         <div class="z-formrow">
             <label for="descriu">{gt text="Status (active/inactive)"}</label>
-            <input type="checkbox" name="actiu" {if $actiu}checked{/if}>
+            <input type="checkbox" name="actiu" {if $actiu}checked{/if} />
         </div>
         <div class="z-center">
             <span class="z-buttons">
