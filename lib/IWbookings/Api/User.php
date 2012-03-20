@@ -88,7 +88,7 @@ class IWbookings_Api_User extends Zikula_AbstractApi {
 
 
     public function marcs($args) {
-        //Comprovaci� de seguretat. Si falla retorna una matriu buida
+        //Comprovació de seguretat. Si falla retorna una matriu buida
         $regs = array();
 
         // Security check
@@ -103,7 +103,37 @@ class IWbookings_Api_User extends Zikula_AbstractApi {
         }
         return $regs;
     }
-
+    
+    /* Check if timeframe exist. 
+     * @param id: timeframe id
+     * returns: 2 if exists and has defined timeframes (all is OK)
+     *          1 if exists, and hasn't got defined timeframes 
+     *          0 if timeframe %id doesn't exist
+     */
+    public function checktimeframe($id){
+        // Security check
+        if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_READ)) {
+            return LogUtil::registerError($this->__('Sorry! No authorization to access this module.'), 403);
+        }
+        
+        $result = 2; // 
+        //Check if module IWtimeframes is installed
+        if (ModUtil::apiFunc('IWbookings', 'admin', 'check_module', "IWtimeframes")) { 
+             $xy = ModUtil::apiFunc('IWbookings', 'user', 'getall_hores', array('mdid' => $id));
+            // Check if timeframe exists     
+            if (is_null(ModUtil::apiFunc('IWtimeframes', 'user', 'get', array('mdid' => $id)))) {
+                
+                $result = 0;  
+            } else { //check if timeframe has defined time bands
+                if (is_null(ModUtil::apiFunc('IWbookings', 'user', 'getall_hores', array('mdid' => $id)))) {
+                   
+                    $result = 1;
+                }
+            }
+        }          
+        return $result;
+    }
+    
     public function fer_reserva($args) {
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
         $inici = FormUtil::getPassedValue('inici', isset($args['inici']) ? $args['inici'] : null, 'GET');
@@ -420,7 +450,7 @@ class IWbookings_Api_User extends Zikula_AbstractApi {
         }
 
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
-
+/*
         if (ModUtil::getVar('IWbookings', 'NTPtime')) {
             // NTP time diference correction
             $now = DateUtil::getDatetime(DateUtil::makeTimestamp() + SessionUtil::getVar('timeOffset'));
@@ -428,7 +458,8 @@ class IWbookings_Api_User extends Zikula_AbstractApi {
             // The server date
             $now = DateUtil::getDatetime();
         }
-
+        */
+        $now = DateUtil::getDatetime();
         $pntable = DBUtil::getTables();
         $c = $pntable['IWbookings_column'];
 
@@ -441,61 +472,60 @@ class IWbookings_Api_User extends Zikula_AbstractApi {
         return true;
     }
 
-    /**
-     * Get time from NTP server
-     * @author 	Tony Bhimani http://www.xenocafe.com/tutorials/php/ntp_time_synchronization/index.php
-     * @adapted	Josep Ferr�ndiz Farr� (jferran6@xtec.cat)
-     * @return	the NTP server in timestamp format
-     */
-    public function getNTPDate() {
-        // Security check
-        if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_READ)) {
-            return LogUtil::registerError($this->__('You are not allowed to administrate the bookings'), 403);
+
+    
+    public function getlinks($args) {
+                //Security check
+        if (!SecurityUtil::checkPermission('IWbookings::', '::', ACCESS_READ)) {
+            LogUtil::registerError($this->__('You are not allowed to administrate the bookings'));
+            return false;
         }
 
-        // ntp time servers to contact
-        // we try them one at a time if the previous failed (failover)
-        // if all fail then wait till tomorrow
-        //$time_servers = array("pool.ntp.org");
-        $time_servers = array("nist1.datum.com",
-            "time.nist.gov"); //,"time-a.timefreq.bldrdoc.gov","utcnist.colorado.edu");
-        // a flag and number of servers
-        $valid_response = false;
-        $ts_count = sizeof($time_servers);
+        $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
+        $mensual = FormUtil::getPassedValue('mensual', isset($args['mensual']) ? $args['mensual'] : null, 'GET');
+        $space = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
 
-        // time adjustment
-        // you will need to change this value for your region (seconds)
-        $time_adjustment = 0;
-        for ($i = 0; $i < $ts_count; $i++) {
-            $time_server = $time_servers[$i];
-            $fs = @fsockopen("www.xtec.cat", 80);
-            if ($fs) { // Has Internet connection. If false, avoid response delay
-                $fp = fsockopen($time_server, 37, $errno, $errstr, 1); //15 seconds timeout for socket connection
-                $data = NULL;
-                while (!feof($fp)) {
-                    $data .= fgets($fp, 128);
-                }
-                fclose($fp);
-                fclose($fs);
-                // we have a response...is it valid? (4 char string -> 32 bits)
-                if (strlen($data) != 4) {
-                    ;
-                } else {
-                    $valid_response = true;
-                    break;
-                }
-            }
-        }
-        $result = 0;
-        if ($valid_response) {
-            // time server response is a string - convert to numeric
-            $NTPtime = ord($data{0}) * pow(256, 3) + ord($data{1}) * pow(256, 2) + ord($data{2}) * 256 + ord($data{3});
-            // convert the seconds to the present date & time
-            $TimeFrom1990 = $NTPtime - 2840140800;
-            $result = $TimeFrom1990 + 631152000;
+        (!isset($sid)) ? $sid = -1 : "";
+
+        //Constru�m la matriu que contindr� les opcions del men� en una sola fila
+        $usrMenu = array();
+        $usrMenu[] = array('url' => ModUtil::url('IWbookings', 'user', 'espais', array('sid' => -1,
+                'mensual' => $mensual)),
+            'text' => $this->__('Show rooms and equipment bookings'),
+            'class' => 'z-icon-es-view');
+
+        if ($mensual == 1 && $sid != -1) {
+            $tipus_taula = $this->__('Show table of the week');
+            $icona = 'z-icon-es-log';
+            $vista = 0;
         } else {
-            LogUtil::registererror($this->__('Can\'t obtain NTP servers time'));
+            $tipus_taula = $this->__('Show table of month');
+            $icona = 'z-icon-es-cubes';
+            $vista = 1;
         }
-        return $result;
+        $usrMenu[] = array('url' => ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid,
+                'mensual' => $vista)),
+            'text' => $tipus_taula,
+            'class'=> $icona);
+
+        // Opci� esborrar antigues nom�s apareix si drets ADMIN i no seleccionat esborrat autom�tic
+        if (SecurityUtil::checkPermission('IWbookings::', '::', ACCESS_ADMIN)) {
+            if ($sid != '-1' || is_null($sid)) {
+                $text = $this->__('Delete all bookings of ') . $space['space_name'];
+                $usrMenu[] = array('url' => ModUtil::url('IWbookings', 'admin', 'buida', array('sid' => $sid)),
+                    'text' => $text,
+                    'class'=> 'z-icon-es-cut');
+            }
+            if (!ModUtil::getVar('IWbookings', 'eraseold')) {
+                $usrMenu[] = array('url' => ModUtil::url('IWbookings', 'user', 'esborra_antigues', array('sid' => $sid,
+                        'mensual' => $mensual)),
+                    'text' => $this->__('Delete old bookings'));
+            }
+            $usrMenu[] = array('url' => ModUtil::url('IWbookings', 'admin', 'main'),
+                'text' => $this->__('Module administration'),
+                'class'=>'z-icon-es-options');
+        }
+        return $usrMenu;
+
     }
 }

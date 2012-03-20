@@ -8,12 +8,14 @@ msgstr ""
 "Project-Id-Version: Zikula 1.2.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-06-21 08:57+0200\n"
-"PO-Revision-Date: 2010-06-21 09:27+0100\n"
-"Last-Translator: \n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2012-03-07 17:29+0100\n"
+"Last-Translator: Josep\n"
+"Language-Team: Intraweb <intraweb@xtec.cat>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Catalan\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: pnuserapi.php:49
 #: pnuserapi.php:167
@@ -815,18 +817,24 @@ msgstr "Selecciona una setmana"
 
 #~ msgid "On selected period, the room or equipment is occupied"
 #~ msgstr "En la franja horària triada l'espai o equip està ocupat."
+
 #~ msgid "Form for preferential bookings"
 #~ msgstr "Formulari per reserves preferents"
+
 #~ msgid "Make preferential booking"
 #~ msgstr "Fer reserva preferent"
+
 #~ msgid "Teacher:"
 #~ msgstr "Professor/a:"
+
 #~ msgid "Temporary bookings: "
 #~ msgstr "Assignació temporal de reserves: "
+
 #~ msgid "Empty table of room or equipment"
 #~ msgstr "Buida la taula de l'espai o l'equip per reservar"
+
 #~ msgid " Calendar"
 #~ msgstr " Calendari"
+
 #~ msgid " Chosse a room or equipment "
 #~ msgstr " Tria un espai o equip "
-

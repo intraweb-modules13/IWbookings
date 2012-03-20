@@ -31,6 +31,7 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
             (empty($item['description'])) ? $item['description'] = '---' : "";
 
             //Recollim el nom del marc horari
+            
             $marc = ModUtil::apiFunc('IWbookings', 'admin', 'nom_marc', array('mdid' => $item['mdid']));
 
             (!empty($marc)) ? $item['mdid'] = $marc : $item['mdid'] = "---";
@@ -134,7 +135,7 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
      * @author	Josep Ferràndiz Farré (jferran6@xtec.cat)
      * @return	The creation form
      */
-    public function newItem() {
+    public function newItem($args) {
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
             throw new Zikula_Exception_Forbidden();
@@ -149,15 +150,16 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
         $vertical = 0;
         $mdid = 0;
         $color = '';
+        $hasbookings = false;
 
         //Get space information for edition purposes
         if (!empty($sid)) {
             //Get register information
             $registre = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
-            if ($registre == false) {
+            if ($registre === false) {
                 return LogUtil::registerError($this->__('Error! Could not load module.'));
             }
-
+            $hasbookings = ModUtil::apiFunc('IWbookings', 'admin', 'hasbookings', $sid);
             //Fill in values
             $nom_espai = $registre['space_name'];
             $descriu = $registre['description'];
@@ -167,19 +169,8 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
             $color = $registre['color'];
         }
 
-        //Func marcs: Check for existing time frames.
-        //If exists, returns an array with timeframe's names
-        //otherwise, an empty array.
-                        // Checks if module IWtimeframes is installed. If not returns error
-        $modid = ModUtil::getIdFromName('IWtimeframes');
-        $modinfo = ModUtil::getInfo($modid);
-        if ($modinfo['state'] == 3) {
-            $marcs = ModUtil::apiFunc('IWbookings', 'admin', 'marcs');
-        } else {
-            $marcs = array();
-        }
-
-        $hi_ha_marcs = (empty($marcs)) ? false : true;
+        $marcs = ModUtil::apiFunc('IWbookings', 'admin', 'marcs');
+        $hi_ha_marcs = count($marcs) < 2 ? false : true;
 
         switch ($m) {
             case 'n':
@@ -200,6 +191,7 @@ class IWbookings_Controller_Admin extends Zikula_AbstractController {
                 ->assign('marcs', $marcs)
                 ->assign('mdid', $mdid)
                 ->assign('vertical', $vertical)
+                ->assign('hasbookings', $hasbookings)
                 ->assign('m', $m)
                 ->assign('accio', $accio)
                 ->assign('acciosubmit', $acciosubmit)

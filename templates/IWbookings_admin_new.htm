@@ -48,7 +48,9 @@
                 <a href="#" onClick="pick('pick');return false;" name="pick" ID="pick">{gt text="Choose color"}</a>
             </div>
         </div>
-        {if $hi_ha_marcs}
+        
+        {if $hi_ha_marcs && !$hasbookings}
+
         <div class="z-formrow">
             <label for="color">{gt text="Timetable"}</label>
             <select name="mdid">
@@ -58,7 +60,7 @@
             </select>
         </div>
         <div class="z-formrow">
-            <label for="descriu">{gt text="Table<br />(Only works when a timetable is selected)"}</label>
+            <label for="descriu">{gt text="Table"}<br />{gt text="(Only works when a timetable is selected)"}</label>
             <input type="checkbox" name="vertical" {if $vertical}checked{/if}>
         </div>
         {/if}

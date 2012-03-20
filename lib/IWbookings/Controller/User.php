@@ -45,12 +45,13 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
      * @return	The module menu
      */
     public function menu($args) {
+        
         //Security check
         if (!SecurityUtil::checkPermission('IWbookings::', '::', ACCESS_READ)) {
             LogUtil::registerError($this->__('You are not allowed to administrate the bookings'));
             return false;
         }
-
+ 
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
         $mensual = FormUtil::getPassedValue('mensual', isset($args['mensual']) ? $args['mensual'] : null, 'GET');
         $space = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
@@ -61,7 +62,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         $usrMenu = array();
         $usrMenu[] = array('url' => ModUtil::url('IWbookings', 'user', 'espais', array('sid' => -1,
                 'mensual' => $mensual)),
-            'text' => $this->__('Show rooms and equipment bookings'));
+           'text' => $this->__('Show rooms and equipment bookings'));
 
         if ($mensual == 1 && $sid != -1) {
             $tipus_taula = $this->__('Show table of the week');
@@ -90,8 +91,13 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
                 'text' => $this->__('Module administration'));
         }
 
+
         return $this->view->assign('user_menu', $usrMenu)
+                ->assign('sid', $sid)
+                ->assign('mensual', $mensual)
+                ->assign('space', $space)
                 ->fetch('IWbookings_user_menu.htm');
+        
     }
 
     /**
@@ -129,6 +135,13 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         if ($sid <> -1) {
             $nom = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
             $marc = $nom['mdid'];
+            if ($marc != 0) {
+                $n = ModUtil::apiFunc('IWbookings', 'user', 'checktimeframe', $marc);
+            if ((ModUtil::apiFunc('IWbookings', 'user', 'checktimeframe', $marc)<2)){
+                LogUtil::registerError($this->__('No hi ha franges'));
+            }            
+            }
+
             //Per si falla la c�rrega de les dades
             if ($nom == false) {
                 LogUtil::registerError($this->__('The room or equipment was not found'));
@@ -212,11 +225,11 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
                 ->assign('calendari', $calendari)
                 ->assign('formulari', $formulari)
                 ->assign('noTable', $ntf)
-                ->assign('dow', $dow)
+                ->assign('dow', $dow) //day of week
                 ->assign('menu', ModUtil::func('IWbookings', 'user', 'menu', array('mensual' => $mensual,
                             'sid' => $sid)))
                 ->fetch('IWbookings_user_assigna.htm');
-    }
+     }
 
     /**
      * Show a form to select a date and the corresponding week period
@@ -1174,6 +1187,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
                 ->assign('hi_ha_espais', $hi_ha_espais)
                 ->assign('mensual', $mensual)
                 ->fetch('IWbookings_user_main.htm');
+
     }
 
     /**

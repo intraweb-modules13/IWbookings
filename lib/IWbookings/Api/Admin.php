@@ -128,7 +128,21 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
         return true;
     }
 
-    public function marcs($args) {
+    // Check if a module is installed
+    public function check_module($module_name){
+        $result = false;
+
+        // Checks if module $module_name is installed.         
+        $modid = ModUtil::getIdFromName($module_name);
+        $modinfo = ModUtil::getInfo($modid);
+        if ($modinfo['state'] == 3) {
+            $result = true;
+        }
+        return $result;
+    }
+    
+    // Retorna un array amb els noms de marc
+    public function marcs() {
         //Comprovaci� de seguretat. Si falla retorna una matriu buida
         $regs = array();
 
@@ -136,28 +150,66 @@ class IWbookings_Api_Admin extends Zikula_AbstractApi {
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
             throw new Zikula_Exception_Forbidden();
         }
-
-        $items = DBUtil::selectObjectArray('IWtimeframes_definition', '', 'nom_marc');
-        $regs[] = array('id' => '0', 'name' => '');
-        foreach ($items as $item) {
-            $regs[] = array('id' => $item['mdid'], 'name' => $item['nom_marc']);
+        if (ModUtil::apiFunc('IWbookings', 'admin','check_module','IWtimeframes')) {
+            $items = DBUtil::selectObjectArray('IWtimeframes_definition', '', 'nom_marc');
+            $regs[] = array('id' => '0', 'name' => '');
+            foreach ($items as $item) {
+                $regs[] = array('id' => $item['mdid'], 'name' => $item['nom_marc']);
+            }
         }
-
         return $regs;
     }
 
-    public function nom_marc($args) {
-        $mdid = FormUtil::getPassedValue('mdid', isset($args['mdid']) ? $args['mdid'] : null, 'POST');
+    /*
+     * Retorna cert si un espai é reserves
+     */
+    public function hasbookings($sid) {
 
+        if (empty($sid)) {
+            return LogUtil::registerError($this->__('Error! Could not do what you wanted. Please check your input.'));
+        }
+
+        $pntables = DBUtil::getTables();
+        $c = $pntables['IWbookings_column'];
+        $where = "WHERE $c[sid]=".DataUtil::formatForStore($sid);
+
+        return ((DBUtil::selectObjectCount('IWbookings', $where))>0);
+    }
+
+    // Retorna el nom d'un marc per un determinat $id
+    public function nom_marc($args) {
         // Security check
         if (!SecurityUtil::checkPermission('IWbookings::', "::", ACCESS_ADMIN)) {
             throw new Zikula_Exception_Forbidden();
         }
-
-        //return DBUtil::selectField('iw_timeframes_def', 'nom_marc', 'mdid =' . $mdid);
-        return DBUtil::selectField('IWtimeframes_definition', 'nom_marc', 'mdid =' . $mdid);
+        
+        // Checks if module IWtimeframes is installed. 
+        if (ModUtil::apiFunc('IWbookings', 'admin','check_module','IWtimeframes')) {
+            $mdid = FormUtil::getPassedValue('mdid', isset($args['mdid']) ? $args['mdid'] : null, 'POST');
+            $name = DBUtil::selectField('IWtimeframes_definition', 'nom_marc', 'mdid =' . $mdid);
+     
+            if (empty($name)) { // EL marc horari referenciat no existeix              
+                // Actualitzar la informació relativa dels espais 
+                ModUtil::apiFunc('IWbookings', 'admin','reset_timeframe',$mdid); 
+            }
+            return $name;
+        }         
     }
 
+    /*
+     * Funció per restablir a 0 la referència al marc horari d'un espai
+     * Això és necessari quan el marc associat a l'espai s'ha esborrat
+     * @id: identificador del marc horari
+     */
+    public function reset_timeframe($id){
+        // Seleccionar tots els espais que facin referència al marc $id i canviar el valor a 0
+        $pntables = pnDBGetTables();
+        $c = $pntables['IWbookings_spaces_column'];
+        $obj = array('mdid' => 0);
+        $where    = "WHERE $c[mdid]=".DataUtil::formatForStore($id);
+        DBUTil::updateObject ($obj, 'IWbookings_spaces', $where);
+    }
+    
     /*
       Funci� per comprovar si un espai est� ocupat en el moment que es fa una reserva temporal.
       Si l'espai est� acupat retorna dades i sin� retorna una variable buida
