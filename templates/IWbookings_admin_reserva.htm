@@ -1,7 +1,16 @@
-<strong>{gt text="Preferential booking created"}</strong><br><br> 
-{gt text="Booking day: "}{$diareserva}<br>
-{gt text="Start time: "}{$horainici}<br>
-{gt text="Finish time: "}{$horafinal}<br>
-{gt text="Group: "}{$grup}<br><br>
-
-<a href="index.php?module=IWbookings&type=admin&func=assigna&sid={$sid}">{gt text="Back to table"}</a>
+<strong>{gt text="Preferential booking created"}</strong>
+<div>
+    {gt text="Booking day: "}{$diareserva}
+</div>
+<div>
+    {gt text="Start time: "}{$horainici}
+</div>
+<div>
+    {gt text="Finish time: "}{$horafinal}
+</div>
+<div>
+    {gt text="Group: "}{$grup}
+</div>
+<a href="{modurl modname='IWbookings' type='admin' func='assigna' sid=$sid}">
+    {gt text="Back to table"}
+</a>

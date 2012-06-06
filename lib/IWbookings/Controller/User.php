@@ -45,13 +45,13 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
      * @return	The module menu
      */
     public function menu($args) {
-        
+
         //Security check
         if (!SecurityUtil::checkPermission('IWbookings::', '::', ACCESS_READ)) {
             LogUtil::registerError($this->__('You are not allowed to administrate the bookings'));
             return false;
         }
- 
+
         $sid = FormUtil::getPassedValue('sid', isset($args['sid']) ? $args['sid'] : null, 'GET');
         $mensual = FormUtil::getPassedValue('mensual', isset($args['mensual']) ? $args['mensual'] : null, 'GET');
         $space = ModUtil::apiFunc('IWbookings', 'user', 'get', array('sid' => $sid));
@@ -62,7 +62,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         $usrMenu = array();
         $usrMenu[] = array('url' => ModUtil::url('IWbookings', 'user', 'espais', array('sid' => -1,
                 'mensual' => $mensual)),
-           'text' => $this->__('Show rooms and equipment bookings'));
+            'text' => $this->__('Show rooms and equipment bookings'));
 
         if ($mensual == 1 && $sid != -1) {
             $tipus_taula = $this->__('Show table of the week');
@@ -93,11 +93,10 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
 
 
         return $this->view->assign('user_menu', $usrMenu)
-                ->assign('sid', $sid)
-                ->assign('mensual', $mensual)
-                ->assign('space', $space)
-                ->fetch('IWbookings_user_menu.htm');
-        
+                        ->assign('sid', $sid)
+                        ->assign('mensual', $mensual)
+                        ->assign('space', $space)
+                        ->fetch('IWbookings_user_menu.htm');
     }
 
     /**
@@ -137,9 +136,9 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
             $marc = $nom['mdid'];
             if ($marc != 0) {
                 $n = ModUtil::apiFunc('IWbookings', 'user', 'checktimeframe', $marc);
-            if ((ModUtil::apiFunc('IWbookings', 'user', 'checktimeframe', $marc)<2)){
-                LogUtil::registerError($this->__('No hi ha franges'));
-            }            
+                if ((ModUtil::apiFunc('IWbookings', 'user', 'checktimeframe', $marc) < 2)) {
+                    LogUtil::registerError($this->__('No hi ha franges'));
+                }
             }
 
             //Per si falla la c�rrega de les dades
@@ -219,17 +218,17 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         $ntf = !(($space['mdid']) and ($space['vertical']));
 
         return $this->view->assign('space_name', $nom['space_name'])
-                ->assign('taula', $taula)
-                ->assign('sid', $sid)
-                ->assign('showontop', $showontop)
-                ->assign('calendari', $calendari)
-                ->assign('formulari', $formulari)
-                ->assign('noTable', $ntf)
-                ->assign('dow', $dow) //day of week
-                ->assign('menu', ModUtil::func('IWbookings', 'user', 'menu', array('mensual' => $mensual,
-                            'sid' => $sid)))
-                ->fetch('IWbookings_user_assigna.htm');
-     }
+                        ->assign('taula', $taula)
+                        ->assign('sid', $sid)
+                        ->assign('showontop', $showontop)
+                        ->assign('calendari', $calendari)
+                        ->assign('formulari', $formulari)
+                        ->assign('noTable', $ntf)
+                        ->assign('dow', $dow) //day of week
+                        ->assign('menu', ModUtil::func('IWbookings', 'user', 'menu', array('mensual' => $mensual,
+                                    'sid' => $sid)))
+                        ->fetch('IWbookings_user_assigna.htm');
+    }
 
     /**
      * Show a form to select a date and the corresponding week period
@@ -249,16 +248,16 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         $showontop = FormUtil::getPassedValue('showontop', isset($args['showontop']) ? $args['showontop'] : null, 'GET');
 
         return $this->view->assign('date', $date)
-                ->assign('start', $start)
-                ->assign('end', $end)
-                ->assign('sid', $sid)
-                ->assign('prevWeek', $prevWeek)
-                ->assign('nextWeek', $nextWeek)
-                ->assign('prevMonth', $prevMonth)
-                ->assign('nextMonth', $nextMonth)
-                ->assign('mensual', $mensual)
-                ->assign('showontop', $showontop)
-                ->fetch('IWbookings_user_select_date.htm');
+                        ->assign('start', $start)
+                        ->assign('end', $end)
+                        ->assign('sid', $sid)
+                        ->assign('prevWeek', $prevWeek)
+                        ->assign('nextWeek', $nextWeek)
+                        ->assign('prevMonth', $prevMonth)
+                        ->assign('nextMonth', $nextMonth)
+                        ->assign('mensual', $mensual)
+                        ->assign('showontop', $showontop)
+                        ->fetch('IWbookings_user_select_date.htm');
     }
 
     /**
@@ -396,23 +395,23 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         }
 
         return $this->view->assign('dayofweek', $dow)
-                ->assign('bookingDate', $bookingDate)
-                ->assign('period', $period)
-                ->assign('sot', $sot)
-                ->assign('fh', $fh)
-                ->assign('dayofweek1', $dow + 1)
-                ->assign('franges', $franges)
-                ->assign('diasetmana', $dia[$dow]['name'])
-                ->assign('dia', $showDays)
-                ->assign('dates', $dies_dates)
-                ->assign('hora', $hora)
-                ->assign('minut', $minut)
-                ->assign('sid', $sid)
-                ->assign('user', UserUtil::getVar('uid'))
-                ->assign('professorat', $professorat)
-                ->assign('username', $username)
-                ->assign('extra_frames', $extra_frames)
-                ->fetch('IWbookings_user_assigna_frm.htm');
+                        ->assign('bookingDate', $bookingDate)
+                        ->assign('period', $period)
+                        ->assign('sot', $sot)
+                        ->assign('fh', $fh)
+                        ->assign('dayofweek1', $dow + 1)
+                        ->assign('franges', $franges)
+                        ->assign('diasetmana', $dia[$dow]['name'])
+                        ->assign('dia', $showDays)
+                        ->assign('dates', $dies_dates)
+                        ->assign('hora', $hora)
+                        ->assign('minut', $minut)
+                        ->assign('sid', $sid)
+                        ->assign('user', UserUtil::getVar('uid'))
+                        ->assign('professorat', $professorat)
+                        ->assign('username', $username)
+                        ->assign('extra_frames', $extra_frames)
+                        ->fetch('IWbookings_user_assigna_frm.htm');
     }
 
 // END formulari_assigna
@@ -684,21 +683,21 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
             }
 
             return $this->view->assign('menu', ModUtil::func('IWbookings', 'user', 'menu'))
-                    ->assign('name', $room['space_name'])
-                    ->assign('d', $cdate)
-                    ->assign('sid', $sid)
-                    ->assign('multiple', $bookingInfo['count'])
-                    ->assign('bookingDate', date('d-m-Y', strtotime($bookingInfo['start'])))
-                    ->assign('start', date('H:i', strtotime($bookingInfo['start'])))
-                    ->assign('end', date('H:i', strtotime($bookingInfo['end'])))
-                    ->assign('user', ModUtil::func('IWmain', 'user', 'getUserInfo', array('uid' => $bookingInfo['user'],
-                                'sv' => ModUtil::func('IWmain', 'user', 'genSecurityValue'),
-                                'info' => 'ncc')))
-                    ->assign('group', $bookingInfo['usrgroup'])
-                    ->assign('bid', $bid)
-                    ->assign('mensual', $mensual)
-                    ->assign('d', $cdate)
-                    ->fetch('IWbookings_user_delete_bookings.htm');
+                            ->assign('name', $room['space_name'])
+                            ->assign('d', $cdate)
+                            ->assign('sid', $sid)
+                            ->assign('multiple', $bookingInfo['count'])
+                            ->assign('bookingDate', date('d-m-Y', strtotime($bookingInfo['start'])))
+                            ->assign('start', date('H:i', strtotime($bookingInfo['start'])))
+                            ->assign('end', date('H:i', strtotime($bookingInfo['end'])))
+                            ->assign('user', ModUtil::func('IWmain', 'user', 'getUserInfo', array('uid' => $bookingInfo['user'],
+                                        'sv' => ModUtil::func('IWmain', 'user', 'genSecurityValue'),
+                                        'info' => 'ncc')))
+                            ->assign('group', $bookingInfo['usrgroup'])
+                            ->assign('bid', $bid)
+                            ->assign('mensual', $mensual)
+                            ->assign('d', $cdate)
+                            ->fetch('IWbookings_user_delete_bookings.htm');
         }
 
         // Confirm authorisation code
@@ -916,18 +915,18 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         }
 
         return $this->view->assign('width', 200)
-                ->assign('month', $month)
-                ->assign('monthNames', $monthNames)
-                ->assign('year', $year)
-                ->assign('space_info', $space_info) // name and color. Array index = space sid
-                ->assign('days', $days)
-                ->assign('sid', $sid)
-                ->assign('diesdelmes', $numDays)
-                ->assign('firstDay', $firstDay - 1) // 1-> monday, 2-> tuesday, ... 7-> sunday
-                ->assign('spaces', $espais) // Listbox for selection purposes
-                ->assign('table', $table)
-                ->assign('tablerowlength', $tablerowlength)
-                ->fetch('IWbookings_user_monthly_view.htm');
+                        ->assign('month', $month)
+                        ->assign('monthNames', $monthNames)
+                        ->assign('year', $year)
+                        ->assign('space_info', $space_info) // name and color. Array index = space sid
+                        ->assign('days', $days)
+                        ->assign('sid', $sid)
+                        ->assign('diesdelmes', $numDays)
+                        ->assign('firstDay', $firstDay - 1) // 1-> monday, 2-> tuesday, ... 7-> sunday
+                        ->assign('spaces', $espais) // Listbox for selection purposes
+                        ->assign('table', $table)
+                        ->assign('tablerowlength', $tablerowlength)
+                        ->fetch('IWbookings_user_monthly_view.htm');
     }
 
     /**
@@ -1002,10 +1001,10 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
 
         $startBooking = DateUtil::buildDatetime($d[2], $d[1], $d[0], $t_inici[0], $t_inici[1], 0, '%Y-%m-%d %H:%M:%S');
         $endBooking = DateUtil::buildDatetime($d[2], $d[1], $d[0], $t_final[0], $t_final[1], 0, '%Y-%m-%d %H:%M:%S');
-      
+
         $sb = DateUtil::makeTimeStamp($startBooking);
         $eb = DateUtil::makeTimeStamp($endBooking);
-        
+
         if (empty($group)) {
             LogUtil::registerError($this->__('You must specify a group'));
             System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid,
@@ -1014,7 +1013,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
                         'd' => $bookingDate)));
             return true;
         }
-        
+
         //Check if start date < end date
         if ($sb > $eb) {
             LogUtil::registerError($this->__('Finish time is minnor than start time'));
@@ -1084,8 +1083,8 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
             }
         }
 
-           
-        
+
+
         // Check if the requested bookings is possible
         $reserved = array();
         foreach ($bookingDates as $bd) {
@@ -1111,7 +1110,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
                 if (!$success) {
                     LogUtil::registerError($this->__('An error has occurred when loading the table or the form'));
                     return System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid,
-                                'date' => $cdate)));
+                                        'date' => $cdate)));
                 }
             }
             // Book receipt
@@ -1129,7 +1128,7 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         }
 
         return System::redirect(ModUtil::url('IWbookings', 'user', 'assigna', array('sid' => $sid,
-                    'date' => $cdate)));
+                            'date' => $cdate)));
     }
 
     /**
@@ -1144,6 +1143,8 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
             return LogUtil::registerError($this->__('You are not allowed to administrate the bookings'));
         }
 
+        $espais = array();
+        
         $mensual = FormUtil::getPassedValue('mensual', isset($args['mensual']) ? $args['mensual'] : null, 'GET');
 
         //Afegim el menú de l'usuari
@@ -1182,12 +1183,11 @@ class IWbookings_Controller_User extends Zikula_AbstractController {
         (SecurityUtil::checkPermission('IWbookings::', '::', ACCESS_ADD)) ? $fes = $this->__('Make a booking') : $fes = $this->__('See the bookings');
 
         return $this->view->assign('action', $fes)
-                ->assign('menu', $menu)
-                ->assign('espais', $espais)
-                ->assign('hi_ha_espais', $hi_ha_espais)
-                ->assign('mensual', $mensual)
-                ->fetch('IWbookings_user_main.htm');
-
+                        ->assign('menu', $menu)
+                        ->assign('espais', $espais)
+                        ->assign('hi_ha_espais', $hi_ha_espais)
+                        ->assign('mensual', $mensual)
+                        ->fetch('IWbookings_user_main.htm');
     }
 
     /**

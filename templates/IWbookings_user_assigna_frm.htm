@@ -113,7 +113,7 @@
                         <div id="frame_{$franja.pos}">
                             <input type="checkbox" id="chk_{$franja.pos}" name="frame" value="{$franja.id}" onclick="change_frame({$franja.pos})" />&nbsp;{$franja.name}
                         </div>
-                       {else}
+                        {else}
                         <div id="frame_{$franja.pos}" style="font-style:italic;">
                             <input type="checkbox" id="chk_{$franja.pos}" name="frame" value="{$franja.id}" onclick="change_frame({$franja.pos})" disabled="true" />
                             {$franja.name}
@@ -215,6 +215,7 @@
             {/section}
         </select>
     </td>
+</tr>
 <tr>
     <td align="right"><b>{gt text="Finish time: "}</b></td>
     <td align="left">
