@@ -54,12 +54,12 @@
 </div>
 
 <table  style="background-color:#335555; " cellspacing="1">
-    <tr >
+    <tr>
         <td valign = "middle" align='center' bgcolor='#AACCDD' colspan='{$tablerowlength}'>
             <a href="{modurl modname='IWbookings' type='user' func='assigna' sid = $sid mensual= 1 m=-1 month=$month year=$year}">
                 {img modname='core' src='1leftarrow.png' set='icons/small' style="cursor:pointer;"   __alt="Previous month" __title="Previous month"}
             </a>
-            <b><font size="3"> {$monthNames[$month]} {$year} </font></b>
+            <span class="monthyear"> {$monthNames[$month]} {$year} </span>
             <a href="{modurl modname='IWbookings' type='user' func='assigna' sid = $sid mensual= 1 m=1 month=$month year=$year}">
                 {img modname='core' src='1rightarrow.png' set='icons/small' style="cursor:pointer;"   __alt="Previous month" __title="Next month"}
             </a>
