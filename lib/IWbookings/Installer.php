@@ -79,27 +79,8 @@ class IWbookings_Installer extends Zikula_AbstractInstaller {
      */
     function upgrade($oldversion) {
 
-        $prefix = $GLOBALS['ZConfig']['System']['prefix'];
-
-        //Delete unneeded tables
-        DBUtil::dropTable('iw_noteboard_public');
-
-        //Rename tables
-        if (!DBUtil::renameTable('iw_bookings', 'IWbookings'))
-            return false;
-        if (!DBUtil::renameTable('iw_bookings_spaces', 'IWbookings_spaces'))
-            return false;
-
-
-        // Update module_vars table
-        // Update the name (keeps old var value)
-        $c = "UPDATE {$prefix}_module_vars SET z_modname = 'IWbookings' WHERE z_bkey = 'iw_bookings'";
-        if (!DBUtil::executeSQL($c)) {
-            return false;
-        }
-
         //Array de noms
-        $oldVarsNames = DBUtil::selectFieldArray("module_vars", 'name', "`z_modname` = 'IWforms'", '', false, '');
+        $oldVarsNames = DBUtil::selectFieldArray("module_vars", 'name', "`modname` = 'IWbookings'", '', false, '');
 
         $newVarsNames = Array('group', 'weeks', 'month_panel', 'weekends', 'eraseold', 'showcolors', 'NTPtime');
 
