@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-22 11:37+0000\n"
-"PO-Revision-Date: 2014-10-22 13:44+0100\n"
-"Last-Translator: Joan Guillén i Pelegay <jguille2@xtec.cat>\n"
+"POT-Creation-Date: 2015-03-03 22:33+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -17,7 +18,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lib/IWbookings/Installer.php:16
-msgid "Module IWmain is required. You have to install the IWmain module previously to install it."
+msgid ""
+"Module IWmain is required. You have to install the IWmain module previously "
+"to install it."
 msgstr ""
 
 #: lib/IWbookings/Version.php:7
@@ -32,8 +35,7 @@ msgstr ""
 msgid "IWbookings"
 msgstr ""
 
-#: lib/IWbookings/Api/User.php:6
-#: lib/IWbookings/Api/User.php:96
+#: lib/IWbookings/Api/User.php:6 lib/IWbookings/Api/User.php:96
 #: lib/IWbookings/Api/User.php:116
 msgid "Sorry! No authorization to access this module."
 msgstr ""
@@ -42,27 +44,18 @@ msgstr ""
 msgid "Error! Could not load items."
 msgstr ""
 
-#: lib/IWbookings/Api/User.php:31
-#: lib/IWbookings/Api/User.php:146
-#: lib/IWbookings/Api/User.php:341
-#: lib/IWbookings/Api/Admin.php:20
-#: lib/IWbookings/Api/Admin.php:59
-#: lib/IWbookings/Api/Admin.php:101
-#: lib/IWbookings/Api/Admin.php:169
-#: lib/IWbookings/Api/Admin.php:265
-#: lib/IWbookings/Api/Admin.php:303
-#: lib/IWbookings/Api/Admin.php:330
+#: lib/IWbookings/Api/User.php:31 lib/IWbookings/Api/User.php:146
+#: lib/IWbookings/Api/User.php:341 lib/IWbookings/Api/Admin.php:20
+#: lib/IWbookings/Api/Admin.php:59 lib/IWbookings/Api/Admin.php:101
+#: lib/IWbookings/Api/Admin.php:169 lib/IWbookings/Api/Admin.php:265
+#: lib/IWbookings/Api/Admin.php:303 lib/IWbookings/Api/Admin.php:330
 msgid "Error! Could not do what you wanted. Please check your input."
 msgstr ""
 
-#: lib/IWbookings/Api/User.php:150
-#: lib/IWbookings/Api/User.php:345
-#: lib/IWbookings/Api/User.php:449
-#: lib/IWbookings/Api/User.php:480
-#: lib/IWbookings/Api/Admin.php:309
-#: lib/IWbookings/Api/Admin.php:345
-#: lib/IWbookings/Api/Admin.php:364
-#: lib/IWbookings/Controller/User.php:12
+#: lib/IWbookings/Api/User.php:150 lib/IWbookings/Api/User.php:345
+#: lib/IWbookings/Api/User.php:449 lib/IWbookings/Api/User.php:480
+#: lib/IWbookings/Api/Admin.php:309 lib/IWbookings/Api/Admin.php:345
+#: lib/IWbookings/Api/Admin.php:364 lib/IWbookings/Controller/User.php:12
 #: lib/IWbookings/Controller/User.php:51
 #: lib/IWbookings/Controller/User.php:940
 #: lib/IWbookings/Controller/User.php:1143
@@ -72,53 +65,45 @@ msgstr ""
 msgid "You are not allowed to administrate the bookings"
 msgstr ""
 
-#: lib/IWbookings/Api/User.php:162
-#: lib/IWbookings/Api/User.php:367
-#: lib/IWbookings/Api/Admin.php:36
-#: lib/IWbookings/Api/Admin.php:284
+#: lib/IWbookings/Api/User.php:162 lib/IWbookings/Api/User.php:367
+#: lib/IWbookings/Api/Admin.php:36 lib/IWbookings/Api/Admin.php:284
 msgid "Error! Creation attempt failed."
 msgstr ""
 
 #: lib/IWbookings/Api/User.php:427
-msgid "An error has occurred while getting registers from the data base. Please, contact webmaster"
+msgid ""
+"An error has occurred while getting registers from the data base. Please, "
+"contact webmaster"
 msgstr ""
 
-#: lib/IWbookings/Api/User.php:494
-#: lib/IWbookings/Api/Admin.php:379
+#: lib/IWbookings/Api/User.php:494 lib/IWbookings/Api/Admin.php:379
 #: lib/IWbookings/Controller/User.php:65
 msgid "Show rooms and equipment bookings"
 msgstr ""
 
-#: lib/IWbookings/Api/User.php:498
-#: lib/IWbookings/Controller/User.php:68
+#: lib/IWbookings/Api/User.php:498 lib/IWbookings/Controller/User.php:68
 msgid "Show table of the week"
 msgstr ""
 
-#: lib/IWbookings/Api/User.php:502
-#: lib/IWbookings/Controller/User.php:71
+#: lib/IWbookings/Api/User.php:502 lib/IWbookings/Controller/User.php:71
 msgid "Show table of month"
 msgstr ""
 
-#: lib/IWbookings/Api/User.php:514
-#: lib/IWbookings/Controller/User.php:81
+#: lib/IWbookings/Api/User.php:514 lib/IWbookings/Controller/User.php:81
 #: templates/IWbookings_admin_emptyspace.htm:6
 msgid "Delete all bookings of "
 msgstr ""
 
-#: lib/IWbookings/Api/User.php:522
-#: lib/IWbookings/Controller/User.php:88
+#: lib/IWbookings/Api/User.php:522 lib/IWbookings/Controller/User.php:88
 msgid "Delete old bookings"
 msgstr ""
 
-#: lib/IWbookings/Api/User.php:525
-#: lib/IWbookings/Controller/User.php:91
+#: lib/IWbookings/Api/User.php:525 lib/IWbookings/Controller/User.php:91
 msgid "Module administration"
 msgstr ""
 
-#: lib/IWbookings/Api/Admin.php:67
-#: lib/IWbookings/Api/Admin.php:107
-#: lib/IWbookings/Api/Admin.php:339
-#: lib/IWbookings/Controller/User.php:146
+#: lib/IWbookings/Api/Admin.php:67 lib/IWbookings/Api/Admin.php:107
+#: lib/IWbookings/Api/Admin.php:339 lib/IWbookings/Controller/User.php:146
 #: lib/IWbookings/Controller/User.php:454
 #: lib/IWbookings/Controller/Admin.php:279
 #: lib/IWbookings/Controller/Admin.php:688
@@ -129,8 +114,7 @@ msgstr ""
 msgid "An error has occurred while modifying the room or equipment"
 msgstr ""
 
-#: lib/IWbookings/Api/Admin.php:112
-#: lib/IWbookings/Controller/Admin.php:669
+#: lib/IWbookings/Api/Admin.php:112 lib/IWbookings/Controller/Admin.php:669
 msgid "An error has occurred while deleting the register"
 msgstr ""
 
@@ -138,8 +122,7 @@ msgstr ""
 msgid "Error! Sorry! Deletion attempt failed."
 msgstr ""
 
-#: lib/IWbookings/Api/Admin.php:378
-#: lib/IWbookings/Controller/Admin.php:177
+#: lib/IWbookings/Api/Admin.php:378 lib/IWbookings/Controller/Admin.php:177
 msgid "Add a new booking"
 msgstr ""
 
@@ -152,7 +135,7 @@ msgid "Module configuration"
 msgstr ""
 
 #: lib/IWbookings/Controller/User.php:140
-msgid "No hi ha franges"
+msgid "There are no timeframes"
 msgstr ""
 
 #: lib/IWbookings/Controller/User.php:150
@@ -248,11 +231,6 @@ msgstr ""
 msgid "Sunday"
 msgstr ""
 
-#: lib/IWbookings/Controller/User.php:367
-#: lib/IWbookings/Controller/Admin.php:530
-msgid "Permanent bookings are not possible as long as the group is empty. Please check module configuration"
-msgstr ""
-
 #: lib/IWbookings/Controller/User.php:628
 msgid "Period from "
 msgstr ""
@@ -264,7 +242,10 @@ msgstr ""
 
 #: lib/IWbookings/Controller/User.php:662
 #: lib/IWbookings/Controller/User.php:711
-msgid "An error has ocurred while cancelling the booking. Please, try it again. If the problem persists, please, contact webmaster. Additionally, check you are not cancelling a book on past dates"
+msgid ""
+"An error has ocurred while cancelling the booking. Please, try it again. If "
+"the problem persists, please, contact webmaster. Additionally, check you are "
+"not cancelling a book on past dates"
 msgstr ""
 
 #: lib/IWbookings/Controller/User.php:668
@@ -280,7 +261,8 @@ msgid "Warning, this is a preferential booking."
 msgstr ""
 
 #: lib/IWbookings/Controller/User.php:713
-msgid "Thanks for freeing the room or equipment. Possibly somebody will be grateful"
+msgid ""
+"Thanks for freeing the room or equipment. Possibly somebody will be grateful"
 msgstr ""
 
 #: lib/IWbookings/Controller/User.php:782
@@ -476,6 +458,12 @@ msgstr ""
 msgid "Room or equipment deleted"
 msgstr ""
 
+#: lib/IWbookings/Controller/Admin.php:530
+msgid ""
+"Permanent bookings are not possible as long as the group is empty. Please "
+"check module configuration"
+msgstr ""
+
 #: lib/IWbookings/Controller/Admin.php:580
 msgid "You must specify a user for preferential booking"
 msgstr ""
@@ -502,8 +490,7 @@ msgstr ""
 
 #: templates/IWbookings_user_delete_bookings.htm:2
 #: templates/IWbookings_user_delete_bookings.htm:26
-#: templates/IWbookings_admin_del.htm:6
-#: templates/IWbookings_admin_del.htm:14
+#: templates/IWbookings_admin_del.htm:6 templates/IWbookings_admin_del.htm:14
 msgid "Confirmation of deletion of the room or equipment"
 msgstr ""
 
@@ -534,8 +521,7 @@ msgstr ""
 #: templates/IWbookings_admin_emptyspace.htm:21
 #: templates/IWbookings_user_taula.htm:25
 #: templates/IWbookings_user_taula.htm:68
-#: templates/IWbookings_admin_new.htm:78
-#: templates/IWbookings_admin_del.htm:19
+#: templates/IWbookings_admin_new.htm:90 templates/IWbookings_admin_del.htm:19
 #: templates/IWbookings_admin_taula.htm:20
 #: templates/IWbookings_admin_taula.htm:53
 #: templates/IWbookings_user_monthly_view.htm:101
@@ -550,9 +536,8 @@ msgstr ""
 msgid "To book"
 msgstr ""
 
-#: templates/IWbookings_user_main.htm:9
-#: templates/IWbookings_admin_main.htm:10
-#: templates/IWbookings_admin_new.htm:40
+#: templates/IWbookings_user_main.htm:9 templates/IWbookings_admin_main.htm:10
+#: templates/IWbookings_admin_new.htm:42
 msgid "Description"
 msgstr ""
 
@@ -565,19 +550,17 @@ msgstr ""
 msgid "There are no rooms or equipment to book"
 msgstr ""
 
-#: templates/IWbookings_admin_main.htm:4
-#: templates/IWbookings_admin_menu.htm:5
+#: templates/IWbookings_admin_main.htm:4 templates/IWbookings_admin_menu.htm:5
 #: templates/IWbookings_user_menu.htm:7
 msgid "Rooms and equipment booking"
 msgstr ""
 
-#: templates/IWbookings_admin_main.htm:9
-#: templates/IWbookings_admin_new.htm:36
+#: templates/IWbookings_admin_main.htm:9 templates/IWbookings_admin_new.htm:38
 msgid "Room or equipment name"
 msgstr ""
 
 #: templates/IWbookings_admin_main.htm:11
-#: templates/IWbookings_admin_new.htm:54
+#: templates/IWbookings_admin_new.htm:60
 msgid "Timetable"
 msgstr ""
 
@@ -586,7 +569,7 @@ msgid "Orientation"
 msgstr ""
 
 #: templates/IWbookings_admin_main.htm:13
-#: templates/IWbookings_admin_new.htm:67
+#: templates/IWbookings_admin_new.htm:79
 msgid "Status (active/inactive)"
 msgstr ""
 
@@ -658,19 +641,31 @@ msgstr ""
 msgid "Back to table"
 msgstr ""
 
-#: templates/IWbookings_admin_new.htm:44
+#: templates/IWbookings_admin_new.htm:6
+msgid "You must type a name for the room or equipment"
+msgstr ""
+
+#: templates/IWbookings_admin_new.htm:46
 msgid "Associated color"
 msgstr ""
 
-#: templates/IWbookings_admin_new.htm:47
+#: templates/IWbookings_admin_new.htm:49
 msgid "Choose color"
 msgstr ""
 
-#: templates/IWbookings_admin_new.htm:62
+#: templates/IWbookings_admin_new.htm:55
+msgid "Timetables not available. You can install IWtimeframes module."
+msgstr ""
+
+#: templates/IWbookings_admin_new.htm:70
+msgid "You can't change timetable because this space has bookings"
+msgstr ""
+
+#: templates/IWbookings_admin_new.htm:74
 msgid "Table"
 msgstr ""
 
-#: templates/IWbookings_admin_new.htm:62
+#: templates/IWbookings_admin_new.htm:74
 msgid "(Only works when a timetable is selected)"
 msgstr ""
 
@@ -707,7 +702,9 @@ msgid "Delete the room or equipment"
 msgstr ""
 
 #: templates/IWbookings_user_monthly_view.htm:40
-msgid "If you want to book an equipment you must select it in the following list and go to the table of the week."
+msgid ""
+"If you want to book an equipment you must select it in the following list "
+"and go to the table of the week."
 msgstr ""
 
 #: templates/IWbookings_user_monthly_view.htm:58
@@ -753,4 +750,3 @@ msgstr ""
 #: templates/IWbookings_user_assigna_frm.htm:292
 msgid "Make booking"
 msgstr ""
-
